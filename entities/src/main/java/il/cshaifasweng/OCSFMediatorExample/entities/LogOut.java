@@ -2,16 +2,24 @@ package il.cshaifasweng.OCSFMediatorExample.entities;
 
 import java.io.Serializable;
 
-public class LogOut implements Serializable {
+public class LogOut implements Serializable { // ️ class name should conventionally be Logout (camelCase), kept as-is for compatibility
 
-    private String mail;
-    public LogOut(){
+    private static final long serialVersionUID = 1L; // good practice for Serializable classes
 
+    private String mail; // could be renamed to email for clarity
+
+    public LogOut() { } // default constructor
+
+    public void setMail(String ml) {
+        this.mail = ml; // consider validating format if used for real emails
     }
-    public void setMail(String ml){
-        this.mail = ml;
-    }
-    public String getMail(){
+
+    public String getMail() {
         return this.mail;
+    }
+
+    @Override
+    public String toString() {
+        return "LogOut{mail='" + mail + "'}";
     }
 }

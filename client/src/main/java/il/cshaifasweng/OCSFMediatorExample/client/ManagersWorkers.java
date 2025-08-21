@@ -1,8 +1,8 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
+import il.cshaifasweng.OCSFMediatorExample.entities.Worker;
 import il.cshaifasweng.OCSFMediatorExample.entities.FoundTable;
 import il.cshaifasweng.OCSFMediatorExample.entities.Manager;
-import il.cshaifasweng.OCSFMediatorExample.entities.Worker;
 import javafx.fxml.FXML;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;

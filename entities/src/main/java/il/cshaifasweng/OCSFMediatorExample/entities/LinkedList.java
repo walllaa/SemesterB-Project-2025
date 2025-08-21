@@ -1,266 +1,127 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
 import java.io.*;
+import java.util.Objects; // used for safe equals in remove
+
+// NOTE: These helpers are top-level, package-private classes in the `entities` package.
+// If you're using JPA entity scanning on this package, it's fine since they have no JPA annotations,
+// but consider moving them to a `util` package later to avoid mixing with entities.
 
 // Class 1
-// Helper Class (Generic LinkedList class for LinkedList)
+// Helper Class (Generic LinkedList node)
+//  Name clash warning: this class is named LinkedList and can be confused with java.util.LinkedList.
+// Keep the name for compatibility, but avoid importing java.util.LinkedList in the same file.
 class LinkedList<T> {
 
     // Data members
-    // 1. Storing value of LinkedList
-    T data;
-    // 2. Storing address of next LinkedList
-    LinkedList<T> next;
+    T data;              // package-private on purpose (kept for compatibility)
+    LinkedList<T> next;  // next node reference
 
-    // Parameterized constructor to assign value
-    LinkedList(T data)
-    {
-
-        // This keyword refers to current object itself
+    LinkedList(T data) {
         this.data = data;
         this.next = null;
     }
 }
 
 // Class 2
-// Helper class ( Generic LinkedList class)
+// Helper class ( Generic singly linked list )
+// Java convention suggests class names start with uppercase (List). Kept as `list` for compatibility.
 class list<T> {
 
-    // Generic LinkedList instance
-    LinkedList<T> head;
-    // Data member to store length of list
-    private int length = 0;
+    LinkedList<T> head; // kept package-private for compatibility
+    private int length = 0; // tracks list size
 
-    // Default constructor
     list() { this.head = null; }
-    // Method
-    // To add LinkedList at the end of List
-    void add(T data)
-    {
 
-        // Creating new LinkedList with given value
+    // Append to tail
+    void add(T data) {
         LinkedList<T> temp = new LinkedList<>(data);
-
-        // Checking if list is empty
-        // and assigning new value to head LinkedList
-        if (this.head == null) {
+        if (this.head == null) { // empty list
             head = temp;
+        } else {
+            LinkedList<T> x = head;
+            while (x.next != null) { x = x.next; }
+            x.next = temp; // link new node at tail
         }
-
-        // If list already exists
-        else {
-
-            // Temporary LinkedList for traversal
-            LinkedList<T> X = head;
-
-            // Iterating till end of the List
-            while (X.next != null) {
-                X = X.next;
-            }
-
-            // Adding new valued LinkedList at the end of the list
-            X.next = temp;
-        }
-
-        // Increasing length after adding new LinkedList
-        length++;
+        length++; //  maintain size
     }
 
-    // Method
-    // To add new LinkedList at any given position
-    void add(int position, T data)
-    {
-
-        // Checking if position is valid
-        if (position > length + 1) {
-
-            // Display message only
-            System.out.println(
-                    "Position Unavailable in LinkedList");
+    // Insert at 1-based position
+    void add(int position, T data) {
+        if (position < 1 || position > length + 1) { //  guard invalid range
+            System.out.println("Position Unavailable in LinkedList");
             return;
         }
-
-        // If new position is head then replace head LinkedList
-        if (position == 1) {
-
-            // Temporary LinkedList that stores previous head
-            // value
-            LinkedList<T> temp = head;
-
-            // New valued LinkedList stored in head
-            head = new LinkedList<T>(data);
-
-            // New head LinkedList pointing to old head LinkedList
-            head.next = temp;
-
+        if (position == 1) { // insert at head
+            LinkedList<T> newHead = new LinkedList<>(data);
+            newHead.next = head;
+            head = newHead;
+            length++; // size++ for head insert
             return;
         }
-
-        // Temporary LinkedList for traversal
-        LinkedList<T> temp = head;
-
-        // Dummy LinkedList with null value that stores previous
-        // LinkedList
-        LinkedList<T> prev = new LinkedList<T>(null);
-        // iterating to the given position
-        while (position - 1 > 0) {
-            // assigning previous LinkedList
-            prev = temp;
-            // incrementing next LinkedList
-            temp = temp.next;
-            // decreasing position counter
-            position--;
+        // traverse to (position-1)
+        LinkedList<T> prev = head;
+        for (int i = 1; i < position - 1; i++) { // stop at node before insertion point
+            prev = prev.next; // safe because of bounds check above
         }
-        // previous LinkedList now points to new value
-        prev.next = new LinkedList<T>(data);
-        // new value now points to former current LinkedList
-        prev.next.next = temp;
+        LinkedList<T> node = new LinkedList<>(data);
+        node.next = prev.next; // may be null when inserting at tail
+        prev.next = node;
+        length++; //  size++ for middle/tail insert
     }
-    // Method
-    // To remove a LinkedList from list
-    void remove(T key)
-    {
 
-        //  NOTE
-        // dummy LinkedList is used to represent the LinkedList before
-        // the current LinkedList Since in a Singly Linked-List we
-        // cannot go backwards from a LinkedList, we use a dummy
-        // LinkedList to represent the previous LinkedList. In case of
-        // head LinkedList, since there is no previous LinkedList, the
-        // previous LinkedList is assigned to null.
-
-        // Dummy LinkedList with null value
-        LinkedList<T> prev = new LinkedList<>(null);
-
-        // Dummy LinkedList pointing to head LinkedList
-        prev.next = head;
-
-        // Next LinkedList that points ahead of current LinkedList
-        LinkedList<T> next = head.next;
-
-        // Temporary LinkedList for traversal
-        LinkedList<T> temp = head;
-
-        // Boolean value that checks whether value to be
-        // deleted exists or not
-        boolean exists = false;
-
-        // If head LinkedList needs to be deleted
-        if (head.data == key) {
+    // Remove first occurrence of key
+    void remove(T key) {
+        if (head == null) { //  handle empty list early
+            System.out.println("List is empty");
+            return;
+        }
+        // check head match
+        if (Objects.equals(head.data, key)) { //  null-safe comparison
             head = head.next;
-
-            // LinkedList to be deleted exists
-            exists = true;
+            length--; //  maintain size
+            return;
         }
-
-        // Iterating over LinkedList
-        while (temp.next != null) {
-
-            // We convert value to be compared into Strings
-            // and then compare using
-            // String1.equals(String2) method
-
-            // Comparing value of key and current LinkedList
-            if (String.valueOf(temp.data).equals(
-                    String.valueOf(key))) {
-
-                // If LinkedList to be deleted is found previous
-                // LinkedList now points to next LinkedList skipping the
-                // current LinkedList
-                prev.next = next;
-                // LinkedList to be deleted exists
-                exists = true;
-
-                // As soon as we find the LinkedList to be deleted
-                // we exit the loop
-                break;
+        // traverse keeping prev pointer
+        LinkedList<T> prev = head;
+        LinkedList<T> curr = head.next;
+        while (curr != null) {
+            if (Objects.equals(curr.data, key)) { // compare by equals, not String.valueOf
+                prev.next = curr.next; // unlink
+                length--; //  maintain size
+                return; // stop after first removal
             }
-
-            // Previous LinkedList now points to current LinkedList
-            prev = temp;
-
-            // Current LinkedList now points to next LinkedList
-            temp = temp.next;
-
-            // Next LinkedList points the LinkedList ahead of current
-            // LinkedList
-            next = temp.next;
+            prev = curr;
+            curr = curr.next;
         }
-
-        // Comparing the last LinkedList with the given key value
-        if (exists == false
-                && String.valueOf(temp.data).equals(
-                String.valueOf(key))) {
-
-            // If found , last LinkedList is skipped over
-            prev.next = null;
-
-            // LinkedList to be deleted exists
-            exists = true;
-        }
-
-        // If LinkedList to be deleted exists
-        if (exists) {
-
-            // Length of LinkedList reduced
-            length--;
-        }
-
-        // If LinkedList to be deleted does not exist
-        else {
-
-            // Print statement
-            System.out.println(
-                    "Given Value is not present in linked list");
-        }
+        System.out.println("Given value is not present in linked list"); // not found
     }
 
-    // Method
-    // To clear the entire LinkedList
-    void clear()
-    {
-
-        // Head now points to null
-        head = null;
-        // length is 0 again
+    // Clear entire list
+    void clear() {
+        head = null; // GC will reclaim nodes
         length = 0;
     }
 
-    // Method
-    // Returns whether List is empty or not
-    boolean empty()
-    {
-
-        // Checking if head LinkedList points to null
-        if (head == null) {
-            return true;
-        }
-        return false;
+    // Is list empty?
+    boolean empty() { // could be named isEmpty() by convention; kept for compatibility
+        return head == null;
     }
-    // Method
-    // Returning the length of LinkedList
+
+    // Current length
     int length() { return this.length; }
 
-    // Method
-    // To display the LinkedList
-    // @Override
-    public String toString()
-    {
-
-        String S = "{ ";
-
-        LinkedList<T> X = head;
-
-        if (X == null)
-            return S + " }";
-
-        while (X.next != null) {
-            S += String.valueOf(X.data) + " -> ";
-            X = X.next;
+    // Display the list
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("{ "); //  faster than repeated string concatenation
+        LinkedList<T> x = head;
+        while (x != null) {
+            sb.append(String.valueOf(x.data));
+            x = x.next;
+            if (x != null) sb.append(" -> ");
         }
-
-        S += String.valueOf(X.data);
-        return S + " }";
+        sb.append(" }");
+        return sb.toString();
     }
 }
-

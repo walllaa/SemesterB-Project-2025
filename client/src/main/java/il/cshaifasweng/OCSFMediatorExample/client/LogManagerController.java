@@ -3,11 +3,11 @@ package il.cshaifasweng.OCSFMediatorExample.client; /**
  */
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.URL;
-import java.security.cert.CertificateRevokedException;
 import java.util.*;
 
-import com.mysql.cj.log.Log;
 import il.cshaifasweng.OCSFMediatorExample.entities.Account;
 import il.cshaifasweng.OCSFMediatorExample.entities.Complaint;
 import il.cshaifasweng.OCSFMediatorExample.entities.Order;
@@ -32,509 +32,291 @@ import org.greenrobot.eventbus.Subscribe;
 
 public class LogManagerController {
 
-    @FXML // fx:id="fieldsError"
-    private Label fieldsError; // Value injected by FXMLLoader
+    @FXML private Label fieldsError;
+    @FXML private Label logError;
+    @FXML private Label shopError;
+    @FXML private Label shopError2;
 
-    @FXML // fx:id="logError"
-    private Label logError; // Value injected by FXMLLoader
+    @FXML private ResourceBundle resources;
+    @FXML private URL location;
 
-    @FXML // fx:id="shopError"
-    private Label shopError; // Value injected by FXMLLoader
+    @FXML private CategoryAxis Day;
+    @FXML private Text FromDateText;
+    @FXML private ComboBox<Integer> FromDay;
+    @FXML private ComboBox<Integer> FromMonth;
+    @FXML private ComboBox<Integer> FromYear;
+    @FXML private Button LoadLogButton;
+    @FXML private BarChart<String, Integer> LogChart;
+    @FXML private ComboBox<String> LogType;
+    @FXML private NumberAxis Number;
+    @FXML private Text UntilDateText;
+    @FXML private ComboBox<Integer> UntilDay;
+    @FXML private ComboBox<Integer> UntilMonth;
+    @FXML private ComboBox<Integer> UntilYear;
+    @FXML private ComboBox<String> chooseShop;
+    @FXML private Button goBack;
+    @FXML private ComboBox<String> CompareShops;
+    @FXML private CheckBox compareButton;
+    @FXML private Label wait;
 
-    @FXML // fx:id="shopError2"
-    private Label shopError2; // Value injected by FXMLLoader
+    static List<Order> orders = new ArrayList<>();
+    static List<Complaint> complaints = new ArrayList<>();
 
-
-
-    @FXML // ResourceBundle that was given to the FXMLLoader
-    private ResourceBundle resources;
-
-    @FXML // URL location of the FXML file that was given to the FXMLLoader
-    private URL location;
-
-    @FXML // fx:id="Day"
-    private CategoryAxis Day; // Value injected by FXMLLoader
-
-    @FXML // fx:id="FromDateText"
-    private Text FromDateText; // Value injected by FXMLLoader
-
-    @FXML // fx:id="FromDay"
-    private ComboBox<Integer> FromDay; // Value injected by FXMLLoader
-
-    @FXML // fx:id="FromMonth"
-    private ComboBox<Integer> FromMonth; // Value injected by FXMLLoader
-
-    @FXML // fx:id="FromYear"
-    private ComboBox<Integer> FromYear; // Value injected by FXMLLoader
-
-    @FXML // fx:id="LoadLogButton"
-    private Button LoadLogButton; // Value injected by FXMLLoader
-
-    @FXML // fx:id="LogChart"
-    private BarChart<String, Integer> LogChart; // Value injected by FXMLLoader
-
-    @FXML // fx:id="LogType"
-    private ComboBox<String> LogType; // Value injected by FXMLLoader
-
-    @FXML // fx:id="Number"
-    private NumberAxis Number; // Value injected by FXMLLoader
-
-    @FXML // fx:id="UntilDateText"
-    private Text UntilDateText; // Value injected by FXMLLoader
-
-    @FXML // fx:id="UntilDay"
-    private ComboBox<Integer> UntilDay; // Value injected by FXMLLoader
-
-    @FXML // fx:id="UntilMonth"
-    private ComboBox<Integer> UntilMonth; // Value injected by FXMLLoader
-
-    @FXML // fx:id="UntilYear"
-    private ComboBox<Integer> UntilYear; // Value injected by FXMLLoader
-
-    @FXML // fx:id="chooseShop"
-    private ComboBox<String> chooseShop; // Value injected by FXMLLoader
-
-    @FXML
-    private Button goBack;
-
-    @FXML
-    private ComboBox<String> CompareShops;
-
-    @FXML
-    private CheckBox compareButton;
-
-    @FXML // fx:id="wait"
-    private Label wait; // Value injected by FXMLLoader
+    int selectedShopID = -1;
+    int selectCompareShopID = -1;
 
     @FXML
     void backToCatalog(ActionEvent event) throws IOException {
         Account recAcc = currentUser;
-        System.out.println("the server sent me the account , NICE 2 !!");
         PassAccountEvent recievedAcc = new PassAccountEvent(recAcc);
-        System.out.println("the server sent me the account , NICE 3 !!");
-        new java.util.Timer().schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-                        EventBus.getDefault().post(recievedAcc);
-                        System.out.println("the server sent me the account , NICE 4 !!");
-                    }
-                },4000
-        );
+        new java.util.Timer().schedule(new java.util.TimerTask() {
+            @Override public void run() { EventBus.getDefault().post(recievedAcc); }
+        }, 4000);
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("primary.fxml"));
         Parent roott = loader.load();
-        PrimaryController cc = loader.getController();
         Stage stage = new Stage();
         stage.setScene(new Scene(roott));
         stage.setTitle("Catalog");
         stage.show();
-        Stage stagee = (Stage)goBack.getScene().getWindow();
-        stagee.close();
-
+        ((Stage) goBack.getScene().getWindow()).close();
     }
-    static List<Order> orders = new ArrayList<Order>();
-    static List<Complaint> complaints = new ArrayList<>();
 
-
-    int selectedShopID = -1;
-    int selectCompareShopID = -1;
     @FXML
     void loadLog(ActionEvent event) {
         logError.setVisible(false);
         shopError.setVisible(false);
         shopError2.setVisible(false);
         fieldsError.setVisible(false);
-        if(chooseShop.getSelectionModel().getSelectedIndex() == -1)
-        {
+
+        if (chooseShop.getSelectionModel().getSelectedIndex() == -1) {
             shopError.setVisible(true);
+            return;
         }
-        else if(LogType.getSelectionModel().getSelectedIndex() == -1)
-        {
+        if (LogType.getSelectionModel().getSelectedIndex() == -1) {
             logError.setVisible(true);
+            return;
         }
-        else if(FromDay.getSelectionModel().getSelectedIndex() == -1 || FromMonth.getSelectionModel().getSelectedIndex() == -1 || FromYear.getSelectionModel().getSelectedIndex() == -1 || UntilDay.getSelectionModel().getSelectedIndex() == -1 || UntilMonth.getSelectionModel().getSelectedIndex() == -1 || UntilYear.getSelectionModel().getSelectedIndex() == -1)
-        {
+        if (FromDay.getSelectionModel().getSelectedIndex() == -1
+                || FromMonth.getSelectionModel().getSelectedIndex() == -1
+                || FromYear.getSelectionModel().getSelectedIndex() == -1
+                || UntilDay.getSelectionModel().getSelectedIndex() == -1
+                || UntilMonth.getSelectionModel().getSelectedIndex() == -1
+                || UntilYear.getSelectionModel().getSelectedIndex() == -1) {
             fieldsError.setVisible(true);
+            return;
         }
-        else if(compareButton.isSelected() && CompareShops.getSelectionModel().getSelectedIndex() == -1)
-        {
+        if (compareButton.isSelected() && CompareShops.getSelectionModel().getSelectedIndex() == -1) {
             shopError2.setVisible(true);
+            return;
         }
-        else {
-            switch (chooseShop.getValue().toString()) {
-                case "ID 0: - Chain":
-                    selectedShopID = 0;
-                    break;
-                case "ID 1: Tiberias, Big Danilof":
-                    selectedShopID = 1;
-                    break;
-                case "ID 2: Haifa, Merkaz Zeiv":
-                    selectedShopID = 2;
-                    break;
-                case "ID 3: Tel Aviv, Ramat Aviv":
-                    selectedShopID = 3;
-                    break;
-                case "ID 4: Eilat, Ice mall":
-                    selectedShopID = 4;
-                    break;
-                case "ID 5: Be'er Sheva, Big Beer Sheva":
-                    selectedShopID = 5;
-                    break;
+
+        switch (String.valueOf(chooseShop.getValue())) {
+            case "ID 0: - Chain": selectedShopID = 0; break;
+            case "ID 1: Tiberias, Big Danilof": selectedShopID = 1; break;
+            case "ID 2: Haifa, Merkaz Zeiv": selectedShopID = 2; break;
+            case "ID 3: Tel Aviv, Ramat Aviv": selectedShopID = 3; break;
+            case "ID 4: Eilat, Ice mall": selectedShopID = 4; break;
+            case "ID 5: Be'er Sheva, Big Beer Sheva": selectedShopID = 5; break;
+        }
+        if (compareButton.isSelected()) {
+            switch (String.valueOf(CompareShops.getValue())) {
+                case "ID 0: - Chain": selectCompareShopID = 0; break;
+                case "ID 1: Tiberias, Big Danilof": selectCompareShopID = 1; break;
+                case "ID 2: Haifa, Merkaz Zeiv": selectCompareShopID = 2; break;
+                case "ID 3: Tel Aviv, Ramat Aviv": selectCompareShopID = 3; break;
+                case "ID 4: Eilat, Ice mall": selectCompareShopID = 4; break;
+                case "ID 5: Be'er Sheva, Big Beer Sheva": selectCompareShopID = 5; break;
             }
-            if (compareButton.isSelected()) {
-                switch (CompareShops.getValue().toString()) {
-                    case "ID 0: - Chain":
-                        selectCompareShopID = 0;
-                        break;
-                    case "ID 1: Tiberias, Big Danilof":
-                        selectCompareShopID = 1;
-                        break;
-                    case "ID 2: Haifa, Merkaz Zeiv":
-                        selectCompareShopID = 2;
-                        break;
-                    case "ID 3: Tel Aviv, Ramat Aviv":
-                        selectCompareShopID = 3;
-                        break;
-                    case "ID 4: Eilat, Ice mall":
-                        selectCompareShopID = 4;
-                        break;
-                    case "ID 5: Be'er Sheva, Big Beer Sheva":
-                        selectCompareShopID = 5;
-                        break;
-                }
+        }
+
+        String logType = LogType.getSelectionModel().getSelectedItem();
+        List<Order> searchResultOrder = new ArrayList<>();
+        List<Complaint> searchResultComplaint = new ArrayList<>();
+
+        LogChart.getData().clear(); // نبدأ من نظيف
+
+        // ملاحظة مهمة: استخدمنا .equals بدل == للمقارنة النصية
+        if ("Income Log".equals(logType)) {
+            searchResultOrder = searchOrderResult(selectedShopID);
+            XYChart.Series<String, Integer> set = aggregateOrdersByDateSum(searchResultOrder);
+            LogChart.getData().add(set);
+
+        } else if ("Orders Log".equals(logType)) {
+            searchResultOrder = searchOrderResult(selectedShopID);
+            XYChart.Series<String, Integer> set = aggregateOrdersByDateCount(searchResultOrder);
+            LogChart.getData().add(set);
+
+        } else { // Complaint Log
+            searchResultComplaint = searchComplaintResult(selectedShopID);
+            XYChart.Series<String, Integer> set = aggregateComplaintsByDateCount(searchResultComplaint);
+            LogChart.getData().add(set);
+        }
+
+        if (compareButton.isSelected()) {
+            if ("Income Log".equals(logType)) {
+                XYChart.Series<String, Integer> set2 = aggregateOrdersByDateSum(searchOrderResult(selectCompareShopID));
+                set2.setName("Compare");
+                LogChart.getData().add(set2);
+            } else if ("Orders Log".equals(logType)) {
+                XYChart.Series<String, Integer> set2 = aggregateOrdersByDateCount(searchOrderResult(selectCompareShopID));
+                set2.setName("Compare");
+                LogChart.getData().add(set2);
+            } else {
+                XYChart.Series<String, Integer> set2 = aggregateComplaintsByDateCount(searchComplaintResult(selectCompareShopID));
+                set2.setName("Compare");
+                LogChart.getData().add(set2);
             }
-                String LogTypeString = LogType.getSelectionModel().getSelectedItem();
-                List<Order> searchResultOrder = new ArrayList<Order>();
-                List<Complaint> searchResultComplaint = new ArrayList<Complaint>();
-                int firstWorks = 0, LastWorks = 0, totalIncome = 0, i = 0;
-                XYChart.Series set = new XYChart.Series();
-                if (LogTypeString == "Income Log") {
-                    searchResultOrder = searchOrderResult(selectedShopID);
-                    System.out.println("First Shop Orders");
-                    printList(searchResultOrder);
-                    while (LastWorks < searchResultOrder.size()) {
-                        if (searchResultOrder.get(firstWorks).sameDate(searchResultOrder.get(LastWorks))) {
-                            totalIncome = totalIncome + searchResultOrder.get(LastWorks).getTotalPrice();
-                            LastWorks++;
-                            if (LastWorks == searchResultOrder.size()) {
-                                set.getData().add(new XYChart.Data(searchResultOrder.get(LastWorks - 1).getDate(), totalIncome));
-                                totalIncome = 0;
-                            }
-                        } else {
-                            set.getData().add(new XYChart.Data(searchResultOrder.get(firstWorks).getDate(), totalIncome));
-                            firstWorks = LastWorks;
-                            totalIncome = 0;
-                        }
-                    }
-                    LogChart.getData().addAll(set);
-
-                } else if (LogTypeString == "Orders Log") {
-                    searchResultOrder = searchOrderResult(selectedShopID);
-                    int totalOrders = 0;
-                    firstWorks = 0;
-                    LastWorks = 0;
-                    while (LastWorks < searchResultOrder.size()) {
-                        if (searchResultOrder.get(firstWorks).sameDate(searchResultOrder.get(LastWorks))) {
-                            totalOrders++;
-                            LastWorks++;
-                            if (LastWorks == searchResultOrder.size()) {
-                                set.getData().add(new XYChart.Data(searchResultOrder.get(LastWorks - 1).getDate(), totalOrders));
-                                System.out.println("Insert " + totalOrders);
-                                totalOrders = 0;
-                            }
-                        } else {
-                            set.getData().add(new XYChart.Data(searchResultOrder.get(firstWorks).getDate(), totalOrders));
-                            System.out.println("Insert " + totalOrders);
-                            firstWorks = LastWorks;
-                            totalOrders = 0;
-                        }
-                    }
-                    LogChart.getData().addAll(set);
-                } else {
-                    searchResultComplaint = searchComplaintResult(selectedShopID);
-                    int totalComplaints = 0;
-                    firstWorks = 0;
-                    LastWorks = 0;
-                    while (LastWorks < searchResultComplaint.size()) {
-                        if (searchResultComplaint.get(firstWorks).sameDate(searchResultComplaint.get(LastWorks))) {
-                            totalComplaints++;
-                            LastWorks++;
-                            if (LastWorks == searchResultComplaint.size()) {
-                                set.getData().add(new XYChart.Data(searchResultComplaint.get(LastWorks - 1).getDate(), totalComplaints));
-                                totalComplaints = 0;
-                            }
-                        } else {
-                            set.getData().add(new XYChart.Data(searchResultComplaint.get(firstWorks).getDate(), totalComplaints));
-                            firstWorks = LastWorks;
-                            totalComplaints = 0;
-                        }
-                    }
-                    LogChart.getData().addAll(set);
-                }
-                if (compareButton.isSelected()) {
-                    firstWorks = 0;
-                    LastWorks = 0;
-                    totalIncome = 0;
-                    i = 0;
-                    XYChart.Series set2 = new XYChart.Series();
-                    searchResultOrder.clear();
-                    searchResultComplaint.clear();
-                    if (LogTypeString == "Income Log") {
-                        searchResultOrder = searchOrderResult(selectCompareShopID);
-                        System.out.println("Second Shop Orders");
-                        printList(searchResultOrder);
-                        while (LastWorks < searchResultOrder.size()) {
-                            if (searchResultOrder.get(firstWorks).sameDate(searchResultOrder.get(LastWorks))) {
-                                totalIncome = totalIncome + searchResultOrder.get(LastWorks).getTotalPrice();
-                                LastWorks++;
-                                if (LastWorks == searchResultOrder.size()) {
-                                    set2.getData().add(new XYChart.Data(searchResultOrder.get(LastWorks - 1).getDate(), totalIncome));
-                                    totalIncome = 0;
-                                }
-                            } else {
-                                set2.getData().add(new XYChart.Data(searchResultOrder.get(firstWorks).getDate(), totalIncome));
-                                firstWorks = LastWorks;
-                                totalIncome = 0;
-                            }
-                        }
-                        LogChart.getData().addAll(set2);
-
-                    } else if (LogTypeString == "Orders Log") {
-                        searchResultOrder = searchOrderResult(selectCompareShopID);
-                        int totalOrders = 0;
-                        firstWorks = 0;
-                        LastWorks = 0;
-                        while (LastWorks < searchResultOrder.size()) {
-                            if (searchResultOrder.get(firstWorks).sameDate(searchResultOrder.get(LastWorks))) {
-                                totalOrders++;
-                                LastWorks++;
-                                if (LastWorks == searchResultOrder.size()) {
-                                    set2.getData().add(new XYChart.Data(searchResultOrder.get(LastWorks - 1).getDate(), totalOrders));
-                                    System.out.println("Insert " + totalOrders);
-                                    totalOrders = 0;
-                                }
-                            } else {
-                                set2.getData().add(new XYChart.Data(searchResultOrder.get(firstWorks).getDate(), totalOrders));
-                                System.out.println("Insert " + totalOrders);
-                                firstWorks = LastWorks;
-                                totalOrders = 0;
-                            }
-                        }
-                        LogChart.getData().addAll(set);
-                    } else {
-                        searchResultComplaint = searchComplaintResult(selectCompareShopID);
-                        int totalComplaints = 0;
-                        firstWorks = 0;
-                        LastWorks = 0;
-                        while (LastWorks < searchResultComplaint.size()) {
-                            if (searchResultComplaint.get(firstWorks).sameDate(searchResultComplaint.get(LastWorks))) {
-                                totalComplaints++;
-                                LastWorks++;
-                                if (LastWorks == searchResultComplaint.size()) {
-                                    set2.getData().add(new XYChart.Data(searchResultComplaint.get(LastWorks - 1).getDate(), totalComplaints));
-                                    totalComplaints = 0;
-                                }
-                            } else {
-                                set2.getData().add(new XYChart.Data(searchResultComplaint.get(firstWorks).getDate(), totalComplaints));
-                                firstWorks = LastWorks;
-                                totalComplaints = 0;
-                            }
-                        }
-
-                    }
-                }
         }
     }
-    void printList(List<Order> orders)
-    {
-        for(int i = 0 ; i < orders.size() ; i++)
-        {
-            System.out.println(orders.get(i).getGreeting());
+
+    // ===== Helpers for aggregation & date grouping =====
+
+    private XYChart.Series<String, Integer> aggregateOrdersByDateSum(List<Order> list) {
+        XYChart.Series<String, Integer> series = new XYChart.Series<>();
+        if (list.isEmpty()) return series;
+
+        list.sort(Comparator.comparingInt(this::getOrderYear)
+                .thenComparingInt(this::getOrderMonth)
+                .thenComparingInt(this::getOrderDay));
+
+        int i = 0;
+        while (i < list.size()) {
+            int j = i;
+            int sum = 0;
+            while (j < list.size() && sameOrderDate(list.get(i), list.get(j))) {
+                sum += getOrderTotalPrice(list.get(j)); // يستخدم finalCost أو totalPrice حسب المتاح
+                j++;
+            }
+            series.getData().add(new XYChart.Data<>(formatOrderDate(list.get(i)), sum));
+            i = j;
+        }
+        return series;
+    }
+
+    private XYChart.Series<String, Integer> aggregateOrdersByDateCount(List<Order> list) {
+        XYChart.Series<String, Integer> series = new XYChart.Series<>();
+        if (list.isEmpty()) return series;
+
+        list.sort(Comparator.comparingInt(this::getOrderYear)
+                .thenComparingInt(this::getOrderMonth)
+                .thenComparingInt(this::getOrderDay));
+
+        int i = 0;
+        while (i < list.size()) {
+            int j = i;
+            int count = 0;
+            while (j < list.size() && sameOrderDate(list.get(i), list.get(j))) {
+                count++;
+                j++;
+            }
+            series.getData().add(new XYChart.Data<>(formatOrderDate(list.get(i)), count));
+            i = j;
+        }
+        return series;
+    }
+
+    private XYChart.Series<String, Integer> aggregateComplaintsByDateCount(List<Complaint> list) {
+        XYChart.Series<String, Integer> series = new XYChart.Series<>();
+        if (list.isEmpty()) return series;
+
+        list.sort(Comparator.comparingInt(Complaint::getYear)
+                .thenComparingInt(Complaint::getMonth)
+                .thenComparingInt(Complaint::getDay));
+
+        int i = 0;
+        while (i < list.size()) {
+            int j = i;
+            int count = 0;
+            while (j < list.size() && list.get(i).sameDate(list.get(j))) {
+                count++;
+                j++;
+            }
+            series.getData().add(new XYChart.Data<>(list.get(i).getDate(), count));
+            i = j;
+        }
+        return series;
+    }
+
+    private void printList(List<Order> orders) {
+        for (Order o : orders) {
+            System.out.println(getOrderGreeting(o)); // يدعم greetingMsg أو greeting
         }
     }
 
     List<Complaint> searchComplaintResult(int shopID)
     {
-        int selectedShopID = 0;
-        int selectCompareShopID = 0;
-        int FromDayInt = FromDay.getValue().intValue();
-        int UntilDayInt = UntilDay.getValue().intValue();
-        int FromMonthInt = FromMonth.getValue().intValue();
-        int UntilMonthInt = UntilMonth.getValue().intValue();
-        int FromYearInt = FromYear.getValue().intValue();
-        int UntilYearInt = UntilYear.getValue().intValue();
-        String LogTypeString = LogType.getSelectionModel().getSelectedItem();
-        List<Complaint> searchResultComplaint = new ArrayList<Complaint>();
-        int firstWorks = 0, LastWorks = 0, totalIncome = 0, i = 0;
-        XYChart.Series set = new XYChart.Series();
-        for (i = 0; i < complaints.size(); i++) {
-            System.out.println("Order Date = " + complaints.get(i).getDate());
-            System.out.println("From: " + FromDayInt + "/" + FromMonthInt + "/" + FromYearInt);
-            System.out.println("Until: " + UntilDayInt + "/" + UntilMonthInt + "/" + UntilYearInt);
-            if (complaints.get(i).getYear() <= UntilYearInt && complaints.get(i).getYear() >= FromYearInt)
-            {
-                System.out.println("Year Test 1");
-                if(complaints.get(i).getYear() == UntilYearInt || complaints.get(i).getYear() == FromYearInt)
-                {
-                    System.out.println("Year Equal Test");
-                    if(complaints.get(i).getYear() == UntilYearInt)
-                    {
-                        System.out.println("Year == Until Test");
-                        if(complaints.get(i).getMonth() < UntilMonthInt)
-                        {
-                            System.out.println(" Month < Until Test");
-                            searchResultComplaint.add(complaints.get(i));
-                        }
-                        if(complaints.get(i).getMonth() == UntilMonthInt)
-                        {
-                            System.out.println(" Month  == Until Test");
-                            if(complaints.get(i).getDay() <= UntilDayInt)
-                            {
-                                System.out.println(" Day <= Until Test");
-                                searchResultComplaint.add(complaints.get(i));
-                            }
-                        }
-                    }
-                    if(complaints.get(i).getYear() == FromYearInt)
-                    {
-                        System.out.println("Year == From Test");
-                        if(complaints.get(i).getMonth() > FromMonthInt)
-                        {
-                            System.out.println("Month > From Test");
-                            searchResultComplaint.add(complaints.get(i));
-                        }
-                        if(complaints.get(i).getMonth() == FromMonthInt)
-                        {
-                            System.out.println("Month == From Test");
-                            if(complaints.get(i).getDay() >= FromDayInt)
-                            {
-                                System.out.println("Day >= From Test");
-                                searchResultComplaint.add(complaints.get(i));
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    System.out.println("Added - Year Between Test");
-                    searchResultComplaint.add(complaints.get(i));
-                }
-            }
-        }
-        for(int z = 0 ; z < searchResultComplaint.size() ; z++)
-            System.out.println("ID: " + searchResultComplaint.get(z).getComplaintID());
-        return searchResultComplaint;
+        int fromD = FromDay.getValue(), untilD = UntilDay.getValue();
+        int fromM = FromMonth.getValue(), untilM = UntilMonth.getValue();
+        int fromY = FromYear.getValue(), untilY = UntilYear.getValue();
 
+        List<Complaint> res = new ArrayList<>();
+        for (Complaint c : complaints) {
+            // ضمن الفترة؟
+            boolean okYear = c.getYear() >= fromY && c.getYear() <= untilY;
+            if (!okYear) continue;
+
+            if (c.getYear() == fromY) {
+                if (c.getMonth() < fromM) continue;
+                if (c.getMonth() == fromM && c.getDay() < fromD) continue;
+            }
+            if (c.getYear() == untilY) {
+                if (c.getMonth() > untilM) continue;
+                if (c.getMonth() == untilM && c.getDay() > untilD) continue;
+            }
+            // لو فيه فلترة متجر لاحقًا، أضفها هنا (Complaint ما فيه shopID)
+            res.add(c);
+        }
+        return res;
     }
+
     List<Order> searchOrderResult(int shopID)
     {
-        int selectedShopID = 0;
-        int selectCompareShopID = 0;
-        int FromDayInt = FromDay.getValue().intValue();
-        int UntilDayInt = UntilDay.getValue().intValue();
-        int FromMonthInt = FromMonth.getValue().intValue();
-        int UntilMonthInt = UntilMonth.getValue().intValue();
-        int FromYearInt = FromYear.getValue().intValue();
-        int UntilYearInt = UntilYear.getValue().intValue();
-        String LogTypeString = LogType.getSelectionModel().getSelectedItem();
-        List<Order> searchResultOrder = new ArrayList<Order>();
-        int firstWorks = 0, LastWorks = 0, totalIncome = 0, i = 0;
-        XYChart.Series set = new XYChart.Series();
-        for (i = 0; i < orders.size(); i++) {
-            System.out.println("Order Date = " + orders.get(i).getDate());
-            System.out.println("From: " + FromDayInt + "/" + FromMonthInt + "/" + FromYearInt);
-            System.out.println("Until: " + UntilDayInt + "/" + UntilMonthInt + "/" + UntilYearInt);
-            if (orders.get(i).getShopID() == shopID) {
-                if (orders.get(i).getOrderYear() <= UntilYearInt && orders.get(i).getOrderYear() >= FromYearInt) {
-                    System.out.println("Year Test 1");
-                    if (orders.get(i).getOrderYear() == UntilYearInt || orders.get(i).getOrderYear() == FromYearInt) {
-                        System.out.println("Year Equal Test");
-                        if (orders.get(i).getOrderYear() == UntilYearInt) {
-                            System.out.println("Year == Until Test");
-                            if (orders.get(i).getOrderMonth() < UntilMonthInt) {
-                                System.out.println(" Month < Until Test");
-                                searchResultOrder.add(orders.get(i));
-                            }
-                            if (orders.get(i).getOrderMonth() == UntilMonthInt) {
-                                System.out.println(" Month  == Until Test");
-                                if (orders.get(i).getOrderDay() <= UntilDayInt) {
-                                    System.out.println(" Day <= Until Test");
-                                    searchResultOrder.add(orders.get(i));
-                                }
-                            }
-                        }
-                        if (orders.get(i).getOrderYear() == FromYearInt) {
-                            System.out.println("Year == From Test");
-                            if (orders.get(i).getOrderMonth() > FromMonthInt) {
-                                System.out.println("Month > From Test");
-                                searchResultOrder.add(orders.get(i));
-                            }
-                            if (orders.get(i).getOrderMonth() == FromMonthInt) {
-                                System.out.println("Month == From Test");
-                                if (orders.get(i).getOrderDay() >= FromDayInt) {
-                                    System.out.println("Day >= From Test");
-                                    searchResultOrder.add(orders.get(i));
-                                }
-                            }
-                        }
-                    } else {
-                        System.out.println("Added - Year Between Test");
-                        searchResultOrder.add(orders.get(i));
-                    }
-                }
+        int fromD = FromDay.getValue(), untilD = UntilDay.getValue();
+        int fromM = FromMonth.getValue(), untilM = UntilMonth.getValue();
+        int fromY = FromYear.getValue(), untilY = UntilYear.getValue();
+
+        List<Order> res = new ArrayList<>();
+        for (Order o : orders) {
+            if (getOrderShopId(o) != shopID) continue;
+
+            int y = getOrderYear(o), m = getOrderMonth(o), d = getOrderDay(o);
+
+            boolean okYear = y >= fromY && y <= untilY;
+            if (!okYear) continue;
+
+            if (y == fromY) {
+                if (m < fromM) continue;
+                if (m == fromM && d < fromD) continue;
             }
+            if (y == untilY) {
+                if (m > untilM) continue;
+                if (m == untilM && d > untilD) continue;
+            }
+            res.add(o);
         }
         System.out.println("---");
-        for(int z = 0 ; z < searchResultOrder.size() ; z++)
-            System.out.println("ID: " + searchResultOrder.get(z).getOrderID());
-        return searchResultOrder;
+        for (Order o : res) {
+            System.out.println("ID: " + getOrderId(o));
+        }
+        return res;
     }
 
     @FXML
     void clickedCompareButton(ActionEvent event)
     {
-        if(compareButton.isSelected())
-        {
-            CompareShops.setVisible(true);
-        }
-        else
-        {
-            CompareShops.setVisible(false);
-        }
-
-
+        CompareShops.setVisible(compareButton.isSelected());
     }
+
     Account currentUser;
     List<Complaint> allComplaints ;
-    @FXML // This method is called by the FXMLLoader when initialization is complete
+
+    @FXML
     void initialize() throws IOException {
         EventBus.getDefault().register(this);
         getAllOrdersMessage getOrdersMsg = new getAllOrdersMessage();
         SimpleClient.getClient().sendToServer(getOrdersMsg);
-        System.out.println("after sending getAllOrders message !");
-        assert CompareShops != null : "fx:id=\"CompareShops\" was not injected: check your FXML file 'log_manager.fxml'.";
-        assert Day != null : "fx:id=\"Day\" was not injected: check your FXML file 'log_manager.fxml'.";
-        assert FromDateText != null : "fx:id=\"FromDateText\" was not injected: check your FXML file 'log_manager.fxml'.";
-        assert FromDay != null : "fx:id=\"FromDay\" was not injected: check your FXML file 'log_manager.fxml'.";
-        assert FromMonth != null : "fx:id=\"FromMonth\" was not injected: check your FXML file 'log_manager.fxml'.";
-        assert FromYear != null : "fx:id=\"FromYear\" was not injected: check your FXML file 'log_manager.fxml'.";
-        assert LoadLogButton != null : "fx:id=\"LoadLogButton\" was not injected: check your FXML file 'log_manager.fxml'.";
-        assert LogChart != null : "fx:id=\"LogChart\" was not injected: check your FXML file 'log_manager.fxml'.";
-        assert LogType != null : "fx:id=\"LogType\" was not injected: check your FXML file 'log_manager.fxml'.";
-        assert Number != null : "fx:id=\"Number\" was not injected: check your FXML file 'log_manager.fxml'.";
-        assert UntilDateText != null : "fx:id=\"UntilDateText\" was not injected: check your FXML file 'log_manager.fxml'.";
-        assert UntilDay != null : "fx:id=\"UntilDay\" was not injected: check your FXML file 'log_manager.fxml'.";
-        assert UntilMonth != null : "fx:id=\"UntilMonth\" was not injected: check your FXML file 'log_manager.fxml'.";
-        assert UntilYear != null : "fx:id=\"UntilYear\" was not injected: check your FXML file 'log_manager.fxml'.";
-        assert chooseShop != null : "fx:id=\"chooseShop\" was not injected: check your FXML file 'log_manager.fxml'.";
-        assert compareButton != null : "fx:id=\"compareButton\" was not injected: check your FXML file 'log_manager.fxml'.";
-        assert fieldsError != null : "fx:id=\"fieldsError\" was not injected: check your FXML file 'log_manager.fxml'.";
-        assert goBack != null : "fx:id=\"goBack\" was not injected: check your FXML file 'log_manager.fxml'.";
-        assert logError != null : "fx:id=\"logError\" was not injected: check your FXML file 'log_manager.fxml'.";
-        assert shopError != null : "fx:id=\"shopError\" was not injected: check your FXML file 'log_manager.fxml'.";
-        assert shopError2 != null : "fx:id=\"shopError2\" was not injected: check your FXML file 'log_manager.fxml'.";
-        assert wait != null : "fx:id=\"wait\" was not injected: check your FXML file 'log_manager.fxml'.";
+
         CompareShops.setVisible(false);
         fieldsError.setVisible(false);
         logError.setVisible(false);
@@ -542,28 +324,9 @@ public class LogManagerController {
         shopError2.setVisible(false);
         compareButton.setVisible(false);
 
-        int i;
-        for(i = 1 ; i < 31 ; i++)
-        {
-            FromDay.getItems().add(i);
-            UntilDay.getItems().add(i);
-        }
-        for(i = 1 ; i < 13 ; i++)
-        {
-            FromMonth.getItems().add(i);
-            UntilMonth.getItems().add(i);
-        }
-        for(i = 2022 ; i < 2030 ; i++)
-        {
-            FromYear.getItems().add(i);
-            UntilYear.getItems().add(i);
-        }
-            //chooseShop.getItems().add("ID 0: - Chain");
-            //chooseShop.getItems().add("ID 1: Tiberias, Big Danilof");
-           // chooseShop.getItems().add("ID 2: Haifa, Merkaz Zeiv");
-            //chooseShop.getItems().add("ID 3: Tel Aviv, Ramat Aviv");
-            //chooseShop.getItems().add("ID 4: Eilat, Ice mall");
-            //chooseShop.getItems().add("ID 5: Be'er Sheva, Big Beer Sheva");
+        for (int i = 1; i < 31; i++) { FromDay.getItems().add(i); UntilDay.getItems().add(i); }
+        for (int i = 1; i < 13; i++) { FromMonth.getItems().add(i); UntilMonth.getItems().add(i); }
+        for (int i = 2022; i < 2030; i++) { FromYear.getItems().add(i); UntilYear.getItems().add(i); }
 
         LogType.getItems().add("Income Log");
         LogType.getItems().add("Orders Log");
@@ -574,75 +337,174 @@ public class LogManagerController {
         LoadLogButton.setDisable(true);
         wait.setVisible(true);
 
-        new java.util.Timer().schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
+        new java.util.Timer().schedule(new java.util.TimerTask() {
+            @Override public void run() {
+                goBack.setDisable(false);
+                LoadLogButton.setDisable(false);
+                wait.setVisible(false);
+                switch (currentUser.getBelongShop()) {
+                    case 0:
+                        chooseShop.getItems().addAll(
+                                "ID 0: - Chain",
+                                "ID 1: Tiberias, Big Danilof",
+                                "ID 2: Haifa, Merkaz Zeiv",
+                                "ID 3: Tel Aviv, Ramat Aviv",
+                                "ID 4: Eilat, Ice mall",
+                                "ID 5: Be'er Sheva, Big Beer Sheva"
+                        );
+                        compareButton.setVisible(true);
+                        break;
+                    case 1: chooseShop.getItems().add("ID 1: Tiberias, Big Danilof"); break;
+                    case 2: chooseShop.getItems().add("ID 2: Haifa, Merkaz Zeiv"); break;
+                    case 3: chooseShop.getItems().add("ID 3: Tel Aviv, Ramat Aviv"); break;
+                    case 4: chooseShop.getItems().add("ID 4: Eilat, Ice mall"); break;
+                    case 5: chooseShop.getItems().add("ID 5: Be'er Sheva, Big Beer Sheva"); break;
+                }
+            }
+        }, 4500);
 
-                        goBack.setDisable(false);
-                        LoadLogButton.setDisable(false);
-                        wait.setVisible(false);
-                        switch (currentUser.getBelongShop())
-                        {
-                            case 0:
-                                chooseShop.getItems().add("ID 0: - Chain");
-                                chooseShop.getItems().add("ID 1: Tiberias, Big Danilof");
-                                chooseShop.getItems().add("ID 2: Haifa, Merkaz Zeiv");
-                                chooseShop.getItems().add("ID 3: Tel Aviv, Ramat Aviv");
-                                chooseShop.getItems().add("ID 4: Eilat, Ice mall");
-                                chooseShop.getItems().add("ID 5: Be'er Sheva, Big Beer Sheva");
-                                compareButton.setVisible(true);
-                                break;
-                            case 1:
-                                chooseShop.getItems().add("ID 1: Tiberias, Big Danilof");
-                                break;
-                            case 2:
-                                chooseShop.getItems().add("ID 2: Haifa, Merkaz Zeiv");
-                                break;
-                            case 3:
-                                chooseShop.getItems().add("ID 3: Tel Aviv, Ramat Aviv");
-                                break;
-                            case 4:
-                                chooseShop.getItems().add("ID 4: Eilat, Ice mall");
-                                break;
-                            case 5:
-                                chooseShop.getItems().add("ID 5: Be'er Sheva, Big Beer Sheva");
-                                break;
-                        }
-                    }
-                },4500
+        CompareShops.getItems().addAll(
+                "ID 0: - Chain",
+                "ID 1: Tiberias, Big Danilof",
+                "ID 2: Haifa, Merkaz Zeiv",
+                "ID 3: Tel Aviv, Ramat Aviv",
+                "ID 4: Eilat, Ice mall",
+                "ID 5: Be'er Sheva, Big Beer Sheva"
         );
-        CompareShops.getItems().add("ID 0: - Chain");
-        CompareShops.getItems().add("ID 1: Tiberias, Big Danilof");
-        CompareShops.getItems().add("ID 2: Haifa, Merkaz Zeiv");
-        CompareShops.getItems().add("ID 3: Tel Aviv, Ramat Aviv");
-        CompareShops.getItems().add("ID 4: Eilat, Ice mall");
-        CompareShops.getItems().add("ID 5: Be'er Sheva, Big Beer Sheva");
-    }
-    @Subscribe
-    public void complaintEvent(PassAllComplaintsEvent allComps){ // added new 30/7
-        List<Complaint> recievedComplaints = allComps.getComplaintsToPass();
-        allComplaints = allComps.getComplaintsToPass();
-        complaints = allComplaints;
     }
 
     @Subscribe
-    public void passOrders(PassOrdersFromServer passOrders){ // added 30/7
-        List<Order> recievedOrders = passOrders.getRecievedOrders();
-        orders = recievedOrders;
+    public void complaintEvent(PassAllComplaintsEvent allComps){
+        complaints = new ArrayList<>(allComps.getComplaintsToPass());
+        allComplaints = complaints;
     }
 
     @Subscribe
-    public void PassAccountEvent(PassAccountEventLogManager passAcc){ // added 30/7
+    public void passOrders(PassOrdersFromServer passOrders){
+        orders = new ArrayList<>(passOrders.getRecievedOrders());
+    }
+
+    @Subscribe
+    public void PassAccountEvent(PassAccountEventLogManager passAcc){
         Account recvAccount = passAcc.getRecievedAccount();
-        System.out.println(recvAccount.getPassword());
-        System.out.println(recvAccount.getAccountID());
-        System.out.println(recvAccount.getEmail());
-        System.out.println(recvAccount.getFullName());
-        System.out.println(recvAccount.getAddress());
-        System.out.println(recvAccount.getCreditCardNumber());
-        System.out.println(recvAccount.getCreditMonthExpire());
         currentUser = recvAccount;
     }
 
+    // ===== Compatibility helpers with the renamed Order fields =====
+    // نحاول أولاً استدعاء Getter بالاسم الجديد/القديم، وإذا غير موجود نقرأ الحقل مباشرةً بالانعكاس.
+
+    private int getOrderId(Order o) { // purchaseId أو orderID
+        Integer v = invokeIntGetter(o, "getPurchaseId");
+        if (v != null) return v;
+        v = invokeIntGetter(o, "getOrderID");
+        if (v != null) return v;
+        Integer f = readIntField(o, "purchaseId");
+        if (f != null) return f;
+        f = readIntField(o, "orderID");
+        return f != null ? f : -1;
+    }
+
+    private int getOrderShopId(Order o) { // shopCode أو shopID
+        Integer v = invokeIntGetter(o, "getShopCode");
+        if (v != null) return v;
+        v = invokeIntGetter(o, "getShopID");
+        if (v != null) return v;
+        Integer f = readIntField(o, "shopCode");
+        if (f != null) return f;
+        f = readIntField(o, "shopID");
+        return f != null ? f : -1;
+    }
+
+    private int getOrderYear(Order o) { // orderYear
+        Integer v = invokeIntGetter(o, "getOrderYear");
+        if (v != null) return v;
+        Integer f = readIntField(o, "orderYear");
+        return f != null ? f : -1;
+    }
+
+    private int getOrderMonth(Order o) {
+        Integer v = invokeIntGetter(o, "getOrderMonth");
+        if (v != null) return v;
+        Integer f = readIntField(o, "orderMonth");
+        return f != null ? f : -1;
+    }
+
+    private int getOrderDay(Order o) {
+        Integer v = invokeIntGetter(o, "getOrderDay");
+        if (v != null) return v;
+        Integer f = readIntField(o, "orderDay");
+        return f != null ? f : -1;
+    }
+
+    private String getOrderGreeting(Order o) { // greetingMsg أو greeting
+        String s = invokeStringGetter(o, "getGreetingMsg");
+        if (s != null) return s;
+        s = invokeStringGetter(o, "getGreeting");
+        if (s != null) return s;
+        String f = readStringField(o, "greetingMsg");
+        if (f != null) return f;
+        f = readStringField(o, "greeting");
+        return f != null ? f : "";
+    }
+
+    private int getOrderTotalPrice(Order o) { // finalCost أو totalPrice
+        Integer v = invokeIntGetter(o, "getFinalCost");
+        if (v != null) return v;
+        v = invokeIntGetter(o, "getTotalPrice");
+        if (v != null) return v;
+        Integer f = readIntField(o, "finalCost");
+        if (f != null) return f;
+        f = readIntField(o, "totalPrice");
+        return f != null ? f : 0;
+    }
+
+    private boolean sameOrderDate(Order a, Order b) {
+        return getOrderDay(a) == getOrderDay(b)
+                && getOrderMonth(a) == getOrderMonth(b)
+                && getOrderYear(a) == getOrderYear(b);
+    }
+
+    private String formatOrderDate(Order o) {
+        return getOrderDay(o) + "/" + getOrderMonth(o) + "/" + getOrderYear(o);
+    }
+
+    private Integer invokeIntGetter(Object target, String method) {
+        try {
+            Method m = target.getClass().getMethod(method);
+            Object val = m.invoke(target);
+            if (val instanceof Integer) return (Integer) val;
+            if (val instanceof Number) return ((Number) val).intValue();
+        } catch (Exception ignored) {}
+        return null;
+    }
+
+    private String invokeStringGetter(Object target, String method) {
+        try {
+            Method m = target.getClass().getMethod(method);
+            Object val = m.invoke(target);
+            return (val != null) ? val.toString() : null;
+        } catch (Exception ignored) {}
+        return null;
+    }
+
+    private Integer readIntField(Object target, String field) {
+        try {
+            Field f = target.getClass().getDeclaredField(field);
+            f.setAccessible(true);
+            Object val = f.get(target);
+            if (val instanceof Integer) return (Integer) val;
+            if (val instanceof Number) return ((Number) val).intValue();
+        } catch (Exception ignored) {}
+        return null;
+    }
+
+    private String readStringField(Object target, String field) {
+        try {
+            Field f = target.getClass().getDeclaredField(field);
+            f.setAccessible(true);
+            Object val = f.get(target);
+            return val != null ? val.toString() : null;
+        } catch (Exception ignored) {}
+        return null;
+    }
 }

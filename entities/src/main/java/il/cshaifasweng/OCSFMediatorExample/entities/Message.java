@@ -8,16 +8,18 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "messages_table")
-public class Message implements Serializable {
-    @Id
-    int messageID;
-    @Column(name = "customer_ID")
-    private int customerID;
-    @Column(name = "Message_Txt")
-    private String msgText;
+public class Message implements Serializable { //  consider adding serialVersionUID for Serializable classes
 
-    public Message() {
-    }
+    @Id
+    private int messageID; // ️ no @GeneratedValue → IDs must be assigned manually
+
+    @Column(name = "customer_ID")
+    private int customerID; // could be a FK to Customer entity in DB
+
+    @Column(name = "Message_Txt")
+    private String msgText; // consider @Lob if messages can be long
+
+    public Message() { } // required by JPA
 
     public Message(int messageID, int customerID, String msgText) {
         this.messageID = messageID;
@@ -25,27 +27,22 @@ public class Message implements Serializable {
         this.msgText = msgText;
     }
 
-    public int getMessageID() {
-        return messageID;
-    }
+    // getters
+    public int getMessageID() { return messageID; }
+    public int getCustomerID() { return customerID; }
+    public String getMsgText() { return msgText; }
 
-    public int getCustomerID() {
-        return customerID;
-    }
+    // setters
+    public void setMessageID(int messageID) { this.messageID = messageID; }
+    public void setCustomerID(int customerID) { this.customerID = customerID; }
+    public void setMsgText(String msgText) { this.msgText = msgText; }
 
-    public String getMsgText() {
-        return msgText;
-    }
-
-    public void setMessageID(int messageID) {
-        this.messageID = messageID;
-    }
-
-    public void setCustomerID(int customerID) {
-        this.customerID = customerID;
-    }
-
-    public void setMsgText(String msgText) {
-        this.msgText = msgText;
+    @Override
+    public String toString() {
+        return "Message{" +
+                "messageID=" + messageID +
+                ", customerID=" + customerID +
+                ", msgText='" + msgText + '\'' +
+                '}';
     }
 }

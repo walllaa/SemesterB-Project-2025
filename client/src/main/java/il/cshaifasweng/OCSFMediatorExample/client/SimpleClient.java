@@ -1,12 +1,10 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
-import antlr.debug.MessageEvent;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import org.greenrobot.eventbus.EventBus;
 
 import il.cshaifasweng.OCSFMediatorExample.client.ocsf.AbstractClient;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SimpleClient extends AbstractClient {
