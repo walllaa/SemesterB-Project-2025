@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="551.0" prefWidth="600.0" stylesheets="@mycsss.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.RegisterController">
+    <children>
+        <TextField fx:id="Name" layoutX="40.0" layoutY="128.0" prefHeight="26.0" prefWidth="226.0" promptText="Full Name" />
+        <TextField fx:id="Street_Address" layoutX="40.0" layoutY="231.0" prefHeight="26.0" prefWidth="283.0" promptText="Street address" />
+        <TextField fx:id="City_Address" layoutX="44.0" layoutY="262.0" prefHeight="26.0" prefWidth="190.0" promptText="City" />
+        <TextField fx:id="userID" layoutX="44.0" layoutY="165.0" prefHeight="26.0" prefWidth="190.0" promptText="ID" />
+        <TextField fx:id="PhoneNumber" layoutX="40.0" layoutY="198.0" prefHeight="26.0" prefWidth="206.0" promptText="Phone Number" />
+        <Button fx:id="RegisterButton" layoutX="224.0" layoutY="505.0" mnemonicParsing="false" onAction="#AddCustomerToDB" prefHeight="26.0" prefWidth="79.0" text="Register" />
+        <TextField fx:id="Email" layoutX="38.0" layoutY="53.0" prefHeight="26.0" prefWidth="205.0" promptText="Email" />
+        <TextField fx:id="CardNumber" layoutX="40.0" layoutY="311.0" prefHeight="26.0" prefWidth="283.0" promptText="Card Number" />
+        <TextField fx:id="CVV" layoutX="38.0" layoutY="384.0" prefHeight="26.0" prefWidth="53.0" promptText="CVV" />
+        <TextField fx:id="Password" layoutX="40.0" layoutY="92.0" prefHeight="26.0" prefWidth="206.0" promptText="Password" />
+        <Label fx:id="ErrorMsg" disable="true" layoutX="252.0" layoutY="56.0" text="This Email already exists!" textFill="WHITE" />
+        <Button fx:id="backk" layoutX="317.0" layoutY="505.0" mnemonicParsing="false" onAction="#backkk" prefHeight="26.0" prefWidth="79.0" text="back" />
+        <Label layoutX="38.0" layoutY="24.0" text="Lilach Customer Registration" textFill="WHITE" />
+        <Label layoutX="38.0" layoutY="293.0" text="Default Credit Card" textFill="WHITE" />
+        <Label fx:id="phone_regex_error" layoutX="253.0" layoutY="193.0" prefHeight="35.0" prefWidth="166.0" text="Phone number should be&#10;10 digits" textAlignment="CENTER" textFill="WHITE" />
+        <Label fx:id="card_regex_error" layoutX="326.0" layoutY="306.0" prefHeight="35.0" prefWidth="166.0" text="Card number should be&#10;16 digits" textAlignment="CENTER" textFill="WHITE" />
+        <Label fx:id="CVV_regex_error" layoutX="99.0" layoutY="379.0" prefHeight="35.0" prefWidth="148.0" text="CVV should be 3 digits" textAlignment="CENTER" textFill="WHITE" />
+        <ComboBox fx:id="selectChain" layoutX="379.0" layoutY="114.0" prefHeight="26.0" prefWidth="206.0" promptText="Register to shop" />
+      <ComboBox fx:id="chooseMonth" layoutX="38.0" layoutY="345.0" prefHeight="26.0" prefWidth="79.0" promptText="Month" />
+      <ComboBox fx:id="chooseYear" layoutX="127.0" layoutY="345.0" prefWidth="150.0" promptText="Year" />
+      <CheckBox fx:id="registerChain" layoutX="419.0" layoutY="55.0" mnemonicParsing="false" onAction="#checkedChain" prefHeight="18.0" prefWidth="178.0" text="Register as chain account" />
+      <CheckBox fx:id="registerShop" layoutX="419.0" layoutY="83.0" mnemonicParsing="false" onAction="#checkedShop" prefHeight="18.0" prefWidth="166.0" text="Register as shop account" />
+      <CheckBox fx:id="subscription" layoutX="41.0" layoutY="429.0" mnemonicParsing="false" onAction="#checkSubscription" prefHeight="18.0" prefWidth="393.0" text="Add annual subscription 100₪ - Offers 10% off purchases over 50₪ " textFill="WHITE" />
+        <Label fx:id="email_regex_error" layoutX="247.0" layoutY="56.0" prefHeight="17.0" prefWidth="178.0" text="Email should contain @ and ." textFill="WHITE" />
+      <Label fx:id="email_regex_error1" layoutX="419.0" layoutY="528.0" prefHeight="17.0" prefWidth="178.0" text="Email should contain @ and ." textFill="WHITE" />
+      <Label fx:id="shopError" layoutX="419.0" layoutY="145.0" prefHeight="18.0" prefWidth="123.0" text="Please choose to shop" textFill="WHITE" />
+      <Label fx:id="fieldsError" layoutX="251.0" layoutY="480.0" prefHeight="18.0" prefWidth="190.0" text="Please fill all the fields" textFill="WHITE" />
+      <Label fx:id="ID_Bad" layoutX="239.0" layoutY="170.0" prefHeight="18.0" prefWidth="148.0" text="ID must be 9 digit number" />
+    </children>
+</AnchorPane>

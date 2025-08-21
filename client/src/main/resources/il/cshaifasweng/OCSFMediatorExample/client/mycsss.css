@@ -1,0 +1,40 @@
+
+
+
+#cont {
+    -fx-border-radius: 1px 50px;
+    -fx-border-image-slice: gray;
+}
+#ee {
+    -fx-border-color: black;
+    -webkit-border-radius:  1px 50px;
+    -moz-border-radius:  1px 50px;
+    -fx-border-radius: 1px 50px;
+-fx-background-color:  linear-gradient(whitesmoke,/* rgb(255, 102, 102)*/lightslategray);
+    -fx-background-radius: 1px 50px;
+
+}
+#btttn{
+
+}
+
+#ee:hover{
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+}
+
+#cath {
+-fx-background-color: linear-gradient(whitesmoke,lightslategray);
+
+}
+
+#menuu-content {
+-fx-background-color: lightslategray;
+    -fx-content-display: none;
+
+}
+.root {
+    -fx-background-size: cover;
+    -fx-background-repeat: no-repeat;
+-fx-background-image:  url("https://c4.wallpaperflare.com/wallpaper/906/513/141/field-summer-flowers-background-glade-hd-wallpaper-preview.jpg");
+}

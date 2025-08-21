@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="487.0" prefWidth="600.0" stylesheets="@mycsss.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.LogInSecondary">
+    <children>
+        <Button fx:id="Customer_login" layoutX="214.0" layoutY="158.0" mnemonicParsing="false" onAction="#CustomerLogIn" prefHeight="50.0" prefWidth="135.0" text="Costumer LogIn" />
+        <Button fx:id="Employee_login" layoutX="214.0" layoutY="236.0" mnemonicParsing="false" onAction="#EmployeeLogIn" prefHeight="50.0" prefWidth="135.0" text="Employee LogIn" />
+      <Button fx:id="bak" layoutX="238.0" layoutY="300.0" mnemonicParsing="false" onAction="#backkk" prefHeight="38.0" prefWidth="87.0" text="back" />
+      <TextField fx:id="Email" layoutX="194.0" layoutY="170.0" prefHeight="26.0" prefWidth="176.0" text="Email" />
+      <TextField fx:id="Password" layoutX="194.0" layoutY="208.0" prefHeight="26.0" prefWidth="176.0" text="Password" />
+      <Label fx:id="ErrorMsg" layoutX="378.0" layoutY="174.0" text="This Email doesn't exist!" textFill="WHITE" />
+      <Label fx:id="ErrorMsgPass" layoutX="378.0" layoutY="212.0" text="Password doesn't match Email!" textFill="WHITE" />
+      <Button fx:id="LogIn" layoutX="238.0" layoutY="255.0" mnemonicParsing="false" onAction="#LogIn" prefHeight="38.0" prefWidth="87.0" text="Log in" />
+      <Button fx:id="Manager_login" layoutX="214.0" layoutY="294.0" mnemonicParsing="false" onAction="#ManagerLogIn" prefHeight="50.0" prefWidth="135.0" text="Manager Login" />
+      <Text fx:id="logSucc" layoutX="238.0" layoutY="371.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Login Successful" wrappingWidth="126.39999999999986" />
+      <Button fx:id="OpenCatalogplz" layoutX="230.0" layoutY="391.0" mnemonicParsing="false" onAction="#openCatalogFunc" prefHeight="26.0" prefWidth="126.0" text="Button" />
+    </children>
+</AnchorPane>

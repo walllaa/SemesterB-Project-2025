@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="489.0" prefWidth="594.0" stylesheets="@mycsss.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.SecondaryController">
+    <children>
+        <ImageView fx:id="flower_image" fitHeight="315.0" fitWidth="223.0" layoutX="46.0" layoutY="129.0" pickOnBounds="true" preserveRatio="true">
+
+        </ImageView>
+        <DialogPane fx:id="flower_name" contentText="flower 1" layoutX="278.0" layoutY="70.0" prefHeight="57.0" prefWidth="73.0" />
+        <Button fx:id="edit_product" layoutX="507.0" layoutY="24.0" mnemonicParsing="false" onAction="#edit_product" text="Edit" />
+        <Button fx:id="back_button" layoutX="16.0" layoutY="25.0" mnemonicParsing="false" onAction="#returnWindow" prefHeight="26.0" prefWidth="59.0" text="back" />
+      <AnchorPane id="es" layoutX="134.0" layoutY="50.0" prefHeight="431.0" prefWidth="313.0" stylesheets="@mycsss.css">
+         <children>
+              <TextField fx:id="setName" layoutX="80.0" layoutY="14.0" promptText="Name" />
+              <TextField fx:id="setPrice" layoutX="80.0" layoutY="52.0" promptText="Price" />
+              <TextArea fx:id="setDetails" layoutX="19.0" layoutY="88.0" prefHeight="277.0" prefWidth="275.0" promptText="Details.." />
+            <Button fx:id="apply_changes" layoutX="107.0" layoutY="384.0" mnemonicParsing="false" onAction="#updateProduct" text="Apply Changes" />
+         </children>
+      </AnchorPane>
+    </children>
+</AnchorPane>

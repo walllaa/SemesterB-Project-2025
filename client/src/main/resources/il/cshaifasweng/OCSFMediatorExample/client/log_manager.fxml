@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="679.0" prefWidth="933.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.LogManagerController">
+   <children>
+      <ComboBox fx:id="chooseShop" layoutX="46.0" layoutY="35.0" prefHeight="26.0" prefWidth="118.0" promptText="Choose Shop" />
+      <Text fx:id="FromDateText" layoutX="202.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="From Date" wrappingWidth="64.448486328125" />
+      <ComboBox fx:id="FromDay" layoutX="266.0" layoutY="36.0" prefHeight="26.0" prefWidth="82.0" promptText="Day" />
+      <ComboBox fx:id="FromMonth" layoutX="354.0" layoutY="35.0" prefHeight="26.0" prefWidth="81.0" promptText="Month" />
+      <ComboBox fx:id="FromYear" layoutX="442.0" layoutY="35.0" prefHeight="26.0" prefWidth="82.0" promptText="Year" />
+      <Text fx:id="UntilDateText" layoutX="202.0" layoutY="103.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Until Date" />
+      <ComboBox fx:id="UntilDay" layoutX="266.0" layoutY="86.0" prefHeight="26.0" prefWidth="82.0" promptText="Day" />
+      <ComboBox fx:id="UntilMonth" layoutX="353.0" layoutY="86.0" prefHeight="26.0" prefWidth="82.0" promptText="Month" />
+      <ComboBox fx:id="UntilYear" layoutX="442.0" layoutY="86.0" prefHeight="26.0" prefWidth="82.0" promptText="Year" />
+      <ComboBox fx:id="LogType" layoutX="46.0" layoutY="86.0" prefHeight="26.0" prefWidth="118.0" promptText="Log Type" />
+      <Button fx:id="LoadLogButton" layoutX="548.0" layoutY="86.0" mnemonicParsing="false" onAction="#loadLog" prefHeight="26.0" prefWidth="118.0" text="Load Log" />
+      <BarChart fx:id="LogChart" layoutX="8.0" layoutY="123.0" prefHeight="566.0" prefWidth="914.0" title="ChartTitle">
+        <xAxis>
+          <CategoryAxis fx:id="Day" label="Day" side="BOTTOM" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis fx:id="Number" label="#" side="LEFT" />
+        </yAxis>
+      </BarChart>
+      <Button fx:id="goBack" layoutX="566.0" layoutY="36.0" mnemonicParsing="false" onAction="#backToCatalog" prefHeight="26.0" prefWidth="82.0" text="Back" />
+      <CheckBox fx:id="compareButton" layoutX="700.0" layoutY="40.0" mnemonicParsing="false" onAction="#clickedCompareButton" prefHeight="17.0" prefWidth="233.0" text="Compare With Another Shop" />
+      <ComboBox fx:id="CompareShops" layoutX="700.0" layoutY="74.0" prefHeight="25.0" prefWidth="179.0" promptText="Choose Compare Shop" />
+      <Label fx:id="shopError" layoutX="46.0" layoutY="14.0" prefHeight="18.0" prefWidth="118.0" text="Please choose a shop" textFill="WHITE" />
+      <Label fx:id="logError" layoutX="40.0" layoutY="65.0" prefHeight="18.0" prefWidth="129.0" text="Please choose a log" textFill="WHITE" />
+      <Label fx:id="fieldsError" layoutX="336.0" layoutY="65.0" prefHeight="18.0" prefWidth="130.0" text="Please fill all date fields" textFill="WHITE" />
+      <Label fx:id="shopError2" layoutX="706.0" layoutY="104.0" prefHeight="18.0" prefWidth="189.0" text="Please choose a shop to compare" textFill="WHITE" />
+      <Label fx:id="wait" layoutX="202.0" layoutY="219.0" prefHeight="242.0" prefWidth="608.0" text="Please Wait">
+         <font>
+            <Font size="96.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

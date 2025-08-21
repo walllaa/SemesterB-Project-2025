@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="780.0" minWidth="1520.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.AdminControlController">
+   <children>
+      <ListView fx:id="accountsList" layoutX="46.0" layoutY="51.0" prefHeight="694.0" prefWidth="242.0" />
+      <Text fx:id="accountsText" layoutX="61.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="accountsText text" wrappingWidth="129.33673095703125" />
+      <Button fx:id="loadProfile" layoutX="315.0" layoutY="108.0" mnemonicParsing="false" onAction="#loadSelectProfile" prefHeight="26.0" prefWidth="143.0" text="Load Selected Profile" />
+      <Button fx:id="backButton" layoutX="464.0" layoutY="714.0" mnemonicParsing="false" onAction="#openCatalog" prefHeight="41.0" prefWidth="339.0" text="Back To Catalog" />
+      <ComboBox fx:id="profileType" layoutX="315.0" layoutY="51.0" onAction="#selectType" prefHeight="26.0" prefWidth="143.0" promptText="Select Profile Type" />
+      <Text fx:id="accIDTxt" layoutX="315.0" layoutY="179.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Account ID :" wrappingWidth="66.93672180175781" />
+      <Text fx:id="cusIDTxt" layoutX="315.0" layoutY="227.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Customer ID :" wrappingWidth="76.0" />
+      <Text fx:id="nameTxt" layoutX="315.0" layoutY="281.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Full Name :" wrappingWidth="66.93672180175781" />
+      <Text fx:id="addressTxt" layoutX="315.0" layoutY="322.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Address :" wrappingWidth="98.13673400878906" />
+      <Text fx:id="emailTxt" layoutX="315.0" layoutY="426.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Email : " wrappingWidth="98.13673400878906" />
+      <Text fx:id="passTxt" layoutX="310.0" layoutY="478.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password :" wrappingWidth="76.0" />
+      <Text fx:id="phoneTxt" layoutX="311.0" layoutY="532.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Phone Number : " wrappingWidth="106.13673400878906" />
+      <Text fx:id="creditNumTxt" layoutX="621.0" layoutY="179.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Credit Card Number : " wrappingWidth="129.3367309570313" />
+      <Text fx:id="creditexpYearTxt" layoutX="623.0" layoutY="282.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Credit Card Expiry Year:" wrappingWidth="129.3367309570313" />
+      <Text fx:id="loggedTxt" layoutX="623.0" layoutY="396.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Currently Logged In :" wrappingWidth="129.3367309570313" />
+      <Text fx:id="cvvTxt" layoutX="623.0" layoutY="336.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CVV : " wrappingWidth="129.3367309570313" />
+      <Text fx:id="creditMonthTxt" layoutX="621.0" layoutY="228.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Credit Card Expiry Month : " wrappingWidth="143.20000000000005" />
+      <Text fx:id="shopTxt" layoutX="629.0" layoutY="444.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Registered To Shop :" wrappingWidth="182.13671875" />
+      <Text fx:id="subTxt" layoutX="629.0" layoutY="488.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Has Subscription :" wrappingWidth="174.13671875" />
+      <TextField fx:id="accID" editable="false" layoutX="384.0" layoutY="162.0" prefHeight="26.0" prefWidth="182.0" />
+      <TextField fx:id="customerID" layoutX="393.0" layoutY="209.0" prefHeight="26.0" prefWidth="182.0" />
+      <TextField fx:id="name" layoutX="384.0" layoutY="263.0" prefHeight="26.0" prefWidth="182.0" />
+      <TextField fx:id="address" layoutX="315.0" layoutY="326.0" prefHeight="58.0" prefWidth="255.0" />
+      <TextField fx:id="email" layoutX="351.0" layoutY="408.0" prefHeight="26.0" prefWidth="226.0" />
+      <TextField fx:id="password" layoutX="373.0" layoutY="460.0" prefHeight="26.0" prefWidth="203.0" />
+      <TextField fx:id="phone" layoutX="403.0" layoutY="514.0" prefHeight="26.0" prefWidth="182.0" />
+      <TextField fx:id="creditnum" layoutX="743.0" layoutY="161.0" prefHeight="26.0" prefWidth="182.0" />
+      <TextField fx:id="creditexpmonth" layoutX="764.0" layoutY="210.0" prefHeight="26.0" prefWidth="182.0" />
+      <TextField fx:id="creditexpyear" layoutX="752.0" layoutY="264.0" prefHeight="26.0" prefWidth="182.0" />
+      <TextField fx:id="cvv" layoutX="688.0" layoutY="318.0" prefHeight="26.0" prefWidth="182.0" />
+      <TextField fx:id="logged" layoutX="743.0" layoutY="378.0" prefHeight="26.0" prefWidth="182.0" />
+      <TextField fx:id="shop" layoutX="743.0" layoutY="426.0" prefHeight="26.0" prefWidth="182.0" />
+      <TextField fx:id="sub" editable="false" layoutX="731.0" layoutY="474.0" prefHeight="26.0" prefWidth="182.0" />
+      <Button fx:id="freeze" layoutX="566.0" layoutY="608.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="174.0" text="Freeze Account" />
+      <Button fx:id="Save" layoutX="312.0" layoutY="608.0" mnemonicParsing="false" onAction="#SaveChanges" prefHeight="26.0" prefWidth="242.0" text="Save Changes" />
+      <Label fx:id="wait" layoutX="370.0" layoutY="215.0" prefHeight="258.0" prefWidth="693.0" text="Please Wait">
+         <font>
+            <Font size="96.0" />
+         </font>
+      </Label>
+      <Text layoutX="629.0" layoutY="532.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Privilage :" wrappingWidth="57.13673400878906" />
+      <TextField fx:id="privilageField" layoutX="686.0" layoutY="515.0" prefHeight="25.0" prefWidth="57.0" />
+   </children>
+</AnchorPane>
