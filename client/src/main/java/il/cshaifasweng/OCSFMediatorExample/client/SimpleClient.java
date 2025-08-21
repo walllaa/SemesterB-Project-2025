@@ -1,15 +1,16 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
+import il.cshaifasweng.OCSFMediatorExample.client.ocsf.AbstractClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import org.greenrobot.eventbus.EventBus;
-
-import il.cshaifasweng.OCSFMediatorExample.client.ocsf.AbstractClient;
 
 import java.util.List;
 
 public class SimpleClient extends AbstractClient {
 
 	private static SimpleClient client = null;
+
+	private static final long DEFAULT_POST_DELAY_MS = 4000L;
 
 	private SimpleClient(String host, int port) {
 		super(host, port);
@@ -19,174 +20,159 @@ public class SimpleClient extends AbstractClient {
 	protected void handleMessageFromServer(Object msg) {
 		System.out.println("handle start");
 
-		if(msg instanceof List){
-			System.out.println("arrived to msg instanceof LIST in simple client");
-			List<Product> listt = (List<Product>) msg;
-			//for(int i=0 ; i<5;i++) System.out.println(listt.get(i).getID());
-
-
-			for(int i=0 ;i<listt.size();i++){
-				System.out.println(listt.get(i).getName());
+		// 1) Lists (catalog etc.)
+		if (msg instanceof List) {
+			@SuppressWarnings("unchecked")
+			List<Product> products = (List<Product>) msg;
+			for (int i = 0; i < products.size(); i++) {
+				System.out.println(products.get(i).getName());
 			}
-			UpdateGuiEvent updateEvent = new UpdateGuiEvent(listt);
-			EventBus.getDefault().post(updateEvent);
-
-		}
-		if(msg instanceof String){
-			String recievedStr = (String)msg ;
-
-				if(recievedStr.equals("not found")){
-				System.out.println("didnt find a table"); // we didnt find the table , so we need to create 6 items at the beggings
-				// now tell the primary controller that the table isnt found
-				InitDatabaseEvent event = new InitDatabaseEvent(true);
-				EventBus.getDefault().post(event);
-			   }
-				if(recievedStr.equals("mail not found")){
-					// post an event that the mail is not found
-					MailChecker mailCheckEvent = new MailChecker(false);
-					EventBus.getDefault().post(mailCheckEvent);
-				}
-				if(recievedStr.equals("wrong password")){
-					// post an event that the password is incorrect
-					MailChecker mailCheckEvent = new MailChecker(true);
-					mailCheckEvent.setPasswordExists(false);
-					EventBus.getDefault().post(mailCheckEvent);
-				}
-				if(recievedStr.equals("found mail and password"))
-				{
-					MailChecker mailCheckEvent = new MailChecker(true);
-					mailCheckEvent.setPasswordExists(true);
-					mailCheckEvent.setLoggedIn(false);
-					EventBus.getDefault().post(mailCheckEvent);
-				}
-				if(recievedStr.equals("already logged"))
-				{
-					MailChecker mailCheckEvent = new MailChecker(true);
-					mailCheckEvent.setPasswordExists(true);
-					mailCheckEvent.setLoggedIn(true);
-					EventBus.getDefault().post(mailCheckEvent);
-				}
-		}
-		else if(msg instanceof FoundTable){
-			FoundTable ft = (FoundTable) msg ;
-			if(ft.getMessage().equals("managers table found") || ft.getMessage().equals("workers table found")){
-				EventBus.getDefault().post(ft);
-			}
-			else {
-				List<Product> ftList = ft.getRecievedProducts();
-				RetrieveDataBaseEvent retEvent = new RetrieveDataBaseEvent(ftList);
-				EventBus.getDefault().post(retEvent);
-			}
-		}
-		else if(msg instanceof Account){ // added today
-			System.out.println("the server sent me the account , NICE !!");
-			Account recAcc = (Account)msg;
-			System.out.println("the server sent me the account , NICE 2 !!");
-			PassAccountEvent recievedAcc = new PassAccountEvent(recAcc);
-			System.out.println("the server sent me the account , NICE 3 !!");
-			new java.util.Timer().schedule(
-					new java.util.TimerTask() {
-						@Override
-						public void run() {
-							EventBus.getDefault().post(recievedAcc);
-							System.out.println("the server sent me the account , NICE 4 !!");
-						}
-					},4000
-			);
+			EventBus.getDefault().post(new UpdateGuiEvent(products));
+			return;
 		}
 
-		else if(msg instanceof Manager){ // added today
-			System.out.println("the server sent me the account , NICE !!");
-			Manager recAcc = (Manager) msg;
-			System.out.println("the server sent me the account , NICE 2 !!");
-			PassAccountEvent recievedAcc = new PassAccountEvent(recAcc);
-			System.out.println("the server sent me the account , NICE 3 !!");
-			new java.util.Timer().schedule(
-					new java.util.TimerTask() {
-						@Override
-						public void run() {
-							EventBus.getDefault().post(recievedAcc);
-							System.out.println("the server sent me the account , NICE 4 !!");
-						}
-					},4000
-			);
+		// 2) Simple textual status strings
+		if (msg instanceof String) {
+			handleStatusString((String) msg);
+			return;
 		}
 
-		else if(msg instanceof Worker){ // added today
-			System.out.println("the server sent me the account , NICE !!");
-			Account recAcc = (Account)msg;
-			System.out.println("the server sent me the account , NICE 2 !!");
-			PassAccountEvent recievedAcc = new PassAccountEvent(recAcc);
-			System.out.println("the server sent me the account , NICE 3 !!");
-			new java.util.Timer().schedule(
-					new java.util.TimerTask() {
-						@Override
-						public void run() {
-							EventBus.getDefault().post(recievedAcc);
-							System.out.println("the server sent me the account , NICE 4 !!");
-						}
-					},4000
-			);
+		// 3) FoundTable payload
+		if (msg instanceof FoundTable) {
+			handleFoundTable((FoundTable) msg);
+			return;
 		}
-		else if(msg instanceof getAllOrdersMessage){ // added 18/7
-			getAllOrdersMessage recievedOrders = (getAllOrdersMessage) msg;
-			System.out.println("the server sent me orders");
-			PassOrdersFromServer passOrders = new PassOrdersFromServer();
-			passOrders.setRecievedOrders(recievedOrders.getOrderList());
 
-			new java.util.Timer().schedule(
-					new java.util.TimerTask() {
-						@Override
-						public void run() {
-							EventBus.getDefault().post(passOrders);
-							System.out.println("the server sent me the account , NICE 4 !!");
-						}
-					},4000
-			);
-
+		// 4) Account types
+		if (msg instanceof Account) {
+			handleAccount((Account) msg);
+			return;
 		}
-		else if(msg instanceof GetAllComplaints){ // added new 21/7
-			System.out.println("Get Complaints Test 1");
-			GetAllComplaints recievedComps = (GetAllComplaints) msg;
-			System.out.println("Get Complaints Test 2");
-			PassAllComplaintsEvent complaintsEvent = new PassAllComplaintsEvent();
-			System.out.println("Get Complaints Test 3");
-			complaintsEvent.setComplaintsToPass(recievedComps.getComplaintsList());
-
-			System.out.println("Comp List Size = " + recievedComps.getComplaintsList().size());
-
-			System.out.println("Get Complaints Test 4");
-			EventBus.getDefault().post(complaintsEvent);
-			System.out.println("Get Complaints Test 5");
+		if (msg instanceof Manager) {
+			handleAccount((Manager) msg);
+			return;
 		}
-		else if(msg instanceof GetAllMessages){ // added 16.8
-			System.out.println("Get Messages Test 1");
-			GetAllMessages recievedMessages = (GetAllMessages) msg;
-			System.out.println("Get Messages Test 2");
-			passAllMessagesEvent messagesEvent = new passAllMessagesEvent();
-			System.out.println("Get Messages Test 3");
-			messagesEvent.setMessagesToPasssToPass(recievedMessages.getMessageList());
-
-			System.out.println("msg List Size = " + recievedMessages.getMessageList().size());
-
-			System.out.println("Get messages Test 4");
-			EventBus.getDefault().post(messagesEvent);
-			System.out.println("Get messages Test 5");
+		if (msg instanceof Worker) {
+			handleAccount((Worker) msg);
+			return;
 		}
-		else if(msg instanceof GetAllAccounts){
-			System.out.println("Get Accounts Test 1");
-			GetAllAccounts recievedAccounts = (GetAllAccounts) msg;
-			new java.util.Timer().schedule(
-					new java.util.TimerTask() {
-						@Override
-						public void run() {
-							EventBus.getDefault().post(recievedAccounts.getAll_accounts());
-						}
-					},4000
-			);
+
+		// 5) Orders / Complaints / Messages / Accounts
+		if (msg instanceof getAllOrdersMessage) {
+			handleOrders((getAllOrdersMessage) msg);
+			return;
+		}
+		if (msg instanceof GetAllComplaints) {
+			handleComplaints((GetAllComplaints) msg);
+			return;
+		}
+		if (msg instanceof GetAllMessages) {
+			handleMessages((GetAllMessages) msg);
+			return;
+		}
+		if (msg instanceof GetAllAccounts) {
+			handleAllAccounts((GetAllAccounts) msg);
 		}
 	}
 
+	// ---------- Helpers ----------
+
+	private void handleStatusString(String s) {
+		// نفس المنطق تبعك بدون تغييرات بالـ strings
+		if ("not found".equals(s)) {
+			EventBus.getDefault().post(new InitDatabaseEvent(true));
+			return;
+		}
+
+		if ("mail not found".equals(s)) {
+			MailChecker ev = new MailChecker(false);
+			EventBus.getDefault().post(ev);
+			return;
+		}
+
+		if ("wrong password".equals(s)) {
+			MailChecker ev = new MailChecker(true);
+			ev.setPasswordExists(false);
+			EventBus.getDefault().post(ev);
+			return;
+		}
+
+		if ("found mail and password".equals(s)) {
+			MailChecker ev = new MailChecker(true);
+			ev.setPasswordExists(true);
+			ev.setLoggedIn(false);
+			EventBus.getDefault().post(ev);
+			return;
+		}
+
+		if ("already logged".equals(s)) {
+			MailChecker ev = new MailChecker(true);
+			ev.setPasswordExists(true);
+			ev.setLoggedIn(true);
+			EventBus.getDefault().post(ev);
+		}
+	}
+
+	private void handleFoundTable(FoundTable ft) {
+		String m = ft.getMessage();
+		if ("managers table found".equals(m) || "workers table found".equals(m)) {
+			EventBus.getDefault().post(ft);
+		} else {
+			List<Product> list = ft.getRecievedProducts();
+			EventBus.getDefault().post(new RetrieveDataBaseEvent(list));
+		}
+	}
+
+	// overload لكل نوع حتى ما يصير compile error على Java 15
+	private void handleAccount(Account acc) {
+		PassAccountEvent ev = new PassAccountEvent(acc);
+		postLater(ev, DEFAULT_POST_DELAY_MS);
+	}
+
+	private void handleAccount(Manager mgr) {
+		PassAccountEvent ev = new PassAccountEvent(mgr);
+		postLater(ev, DEFAULT_POST_DELAY_MS);
+	}
+
+	private void handleAccount(Worker wrk) {
+		PassAccountEvent ev = new PassAccountEvent(wrk);
+		postLater(ev, DEFAULT_POST_DELAY_MS);
+	}
+
+	private void handleOrders(getAllOrdersMessage m) {
+		PassOrdersFromServer ev = new PassOrdersFromServer();
+		ev.setRecievedOrders(m.getOrderList());
+		postLater(ev, DEFAULT_POST_DELAY_MS);
+	}
+
+	private void handleComplaints(GetAllComplaints m) {
+		PassAllComplaintsEvent ev = new PassAllComplaintsEvent();
+		ev.setComplaintsToPass(m.getComplaintsList());
+		EventBus.getDefault().post(ev);
+	}
+
+	private void handleMessages(GetAllMessages m) {
+		passAllMessagesEvent ev = new passAllMessagesEvent();
+		ev.setMessagesToPasssToPass(m.getMessageList());
+		EventBus.getDefault().post(ev);
+	}
+
+	private void handleAllAccounts(GetAllAccounts m) {
+		// نفس التأخير اللي كان عندك
+		postLater(m.getAll_accounts(), DEFAULT_POST_DELAY_MS);
+	}
+
+	private void postLater(Object event, long delayMs) {
+		new java.util.Timer().schedule(
+				new java.util.TimerTask() {
+					@Override
+					public void run() {
+						EventBus.getDefault().post(event);
+					}
+				},
+				delayMs
+		);
+	}
 
 	public static SimpleClient getClient() {
 		if (client == null) {
@@ -194,5 +180,4 @@ public class SimpleClient extends AbstractClient {
 		}
 		return client;
 	}
-
 }

@@ -1,11 +1,10 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
-import  il.cshaifasweng.OCSFMediatorExample.entities.Product;
 
+import il.cshaifasweng.OCSFMediatorExample.entities.Product;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.PrimitiveIterator;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,12 +12,10 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-
 public class SecondaryController {
 
-
-    @FXML // fx:id="apply_changes"
-    private Button apply_changes; // Value injected by FXMLLoader
+    @FXML
+    private Button apply_changes;
 
     @FXML
     private ResourceBundle resources;
@@ -53,14 +50,12 @@ public class SecondaryController {
     @FXML
     private TextField setPrice;
 
-
     private Button btn;
 
     @FXML
-    void edit_product(ActionEvent event)
-    {
+    void edit_product(ActionEvent event) {
         apply_changes.setVisible(true);
-        Product currtProduct  = il.cshaifasweng.OCSFMediatorExample.client.PrimaryController.getCurrent_button();
+        Product currtProduct = il.cshaifasweng.OCSFMediatorExample.client.PrimaryController.getCurrent_button();
 
         flower_details.setVisible(false);
         flower_name.setVisible(false);
@@ -70,11 +65,10 @@ public class SecondaryController {
         setName.setVisible(true);
         setPrice.setVisible(true);
 
+        // بما أن السعر String بالكلاس Product
         setPrice.setText(currtProduct.getPrice());
         setDetails.setText(currtProduct.getDetails());
         setName.setText(currtProduct.getName());
-
-
     }
 
     @FXML
@@ -84,15 +78,13 @@ public class SecondaryController {
     }
 
     @FXML
-    void updateProduct(ActionEvent event)
-    {
-        Product currtProduct  = il.cshaifasweng.OCSFMediatorExample.client.PrimaryController.getCurrent_button();
+    void updateProduct(ActionEvent event) {
+        Product currtProduct = il.cshaifasweng.OCSFMediatorExample.client.PrimaryController.getCurrent_button();
 
-
+        // كله Strings حسب الـ Product
         currtProduct.setPrice(setPrice.getText());
         currtProduct.setDetails(setDetails.getText());
         currtProduct.setName(setName.getText());
-
 
         flower_details.setVisible(true);
         flower_name.setVisible(true);
@@ -109,17 +101,14 @@ public class SecondaryController {
         apply_changes.setVisible(false);
 
         try {
-            SimpleClient.getClient().sendToServer(currtProduct); // sends the updated product to the server class
+            SimpleClient.getClient().sendToServer(currtProduct);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
     }
 
     @FXML
     void initialize() throws MalformedURLException {
-
         assert edit_product != null : "fx:id=\"edit_product\" was not injected: check your FXML file 'secondary.fxml'.";
         assert flower_details != null : "fx:id=\"flower_details1\" was not injected: check your FXML file 'secondary.fxml'.";
         assert flower_name != null : "fx:id=\"flower_name1\" was not injected: check your FXML file 'secondary.fxml'.";
@@ -142,10 +131,11 @@ public class SecondaryController {
         flower_price.setContentText(currentProduct.getPrice());
         flower_name.setContentText(currentProduct.getName());
 
+        // load image
         String img_path = "src/main/resources/images/flower" + currentProduct.getID() + ".png";
-        File file = new File("img_path");
+        File file = new File(img_path);
         String localUrl = file.toURI().toURL().toExternalForm();
-        flower_image.setImage(new Image(localUrl,true));
+        flower_image.setImage(new Image(localUrl, true));
 
         // enable all fields
         flower_details.setVisible(true);
@@ -155,5 +145,4 @@ public class SecondaryController {
 
         apply_changes.setVisible(false);
     }
-
 }
