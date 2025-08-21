@@ -3,31 +3,27 @@ package il.cshaifasweng.OCSFMediatorExample.entities;
 import java.io.Serializable;
 import java.time.LocalTime;
 
-
 public class Warning implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -8224097662914849956L;
-	
-	private String message;
-	private LocalTime time;
 
-	public String getMessage() {
-		return message;
+	private String warningText;
+	private LocalTime issuedAt;
+
+	public Warning(String warningText) {
+		this.warningText = warningText;
+		this.issuedAt = LocalTime.now();
 	}
 
-	public void setMessage(String message) {
-		this.message = message;
+	public String getWarningText() {
+		return warningText;
 	}
 
-	public Warning(String message) {
-		this.message = message;
-		this.time = LocalTime.now();
+	public void setWarningText(String warningText) {
+		this.warningText = warningText;
 	}
 
-	public LocalTime getTime() {
-		return time;
+	public LocalTime getIssuedAt() {
+		return issuedAt;
 	}
 }

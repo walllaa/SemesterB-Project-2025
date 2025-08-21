@@ -18,8 +18,6 @@ import javafx.stage.Stage;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import javax.persistence.criteria.CriteriaBuilder;
-
 public class AdminControlController {
 
     @FXML // ResourceBundle that was given to the FXMLLoader
@@ -204,10 +202,10 @@ public class AdminControlController {
             SelectedID = Integer.parseInt(SelectedIDString);
             if(selectType == 1)
             {
-                for(int i = 0 ; i < all_accounts.size() ; i++)
+                for(int i = 0; i < all_Customer_accounts.size() ; i++)
                 {
-                    if (SelectedID == all_accounts.get(i).getAccountID())
-                        selectedAcc = all_accounts.get(i);
+                    if (SelectedID == all_Customer_accounts.get(i).getAccountID())
+                        selectedAcc = all_Customer_accounts.get(i);
                 }
                 accID.setText(Integer.toString(selectedAcc.getAccountID()));
                 customerID.setText(Long.toString(selectedAcc.getID()));
@@ -258,7 +256,7 @@ public class AdminControlController {
             }
             if(selectType == 2)
             {
-                for(int i = 0 ; i < all_workers.size() ; i++) {
+                for(int i = 0; i < all_workers.size() ; i++) {
                     if (SelectedID == all_workers.get(i).getPersonID())
                         selectedWork = all_workers.get(i);
                 }
@@ -334,9 +332,9 @@ public class AdminControlController {
         if(profileType.getSelectionModel().getSelectedItem() == "Customers")
         {
             selectType = 1;
-            for(int i = 0 ; i < all_accounts.size() ; i++)
+            for(int i = 0; i < all_Customer_accounts.size() ; i++)
             {
-                aString = "#" + all_accounts.get(i).getAccountID() + " - " + all_accounts.get(i).getFullName();
+                aString = "#" + all_Customer_accounts.get(i).getAccountID() + " - " + all_Customer_accounts.get(i).getFullName();
                 accountsList.getItems().add(aString);
                 aString = "";
             }
@@ -344,7 +342,7 @@ public class AdminControlController {
         else if(profileType.getSelectionModel().getSelectedItem() == "Workers")
         {
             selectType = 2;
-            for(int i = 0 ; i < all_workers.size() ; i++)
+            for(int i = 0; i < all_workers.size() ; i++)
             {
                 aString = "#" + all_workers.get(i).getPersonID() + " - " + all_workers.get(i).getFullName();
                 accountsList.getItems().add(aString);
@@ -366,7 +364,7 @@ public class AdminControlController {
 
     }
 
-    public List<Account> all_accounts = new ArrayList<>();
+    public List<Account> all_Customer_accounts = new ArrayList<>();
     public List<Manager> all_managers = new ArrayList<>();
     public List<Worker> all_workers = new ArrayList<>();
     Account currentUser;
@@ -472,8 +470,8 @@ public class AdminControlController {
     @Subscribe
     public void getAllAccountFromDB(List<Account> receivedAccounts){
         System.out.println("in getAllAccountFromDB");
-        all_accounts = receivedAccounts;
-        System.out.println("all accounts size is " + all_accounts.size());
+        all_Customer_accounts = receivedAccounts;
+        System.out.println("all accounts size is " + all_Customer_accounts.size());
     }
 
     @Subscribe

@@ -1,97 +1,90 @@
 package il.cshaifasweng.OCSFMediatorExample.server.ocsf;
+
 import il.cshaifasweng.OCSFMediatorExample.server.SimpleServer;
-import il.cshaifasweng.OCSFMediatorExample.entities.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import org.hibernate.*;
+import il.cshaifasweng.OCSFMediatorExample.entities.Complaint;
+
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ComplaintUpdateManager {
-    public static int complaintsnum = 0;
-    public static List<Complaint> complaintGeneralList = new ArrayList<Complaint>();
 
-    private static List<Complaint> getAllComplaints() {
-        System.out.println("Arrived to getAllComplaints 1");
+    // renamed for clarity; not part of any external API
+    public static int complaintsCount = 0;                       // was complaintsnum
+    public static List<Complaint> complaintCache = new ArrayList<>(); // was complaintGeneralList
+
+    // --- Queries (package-private helpers) ---
+    static List<Complaint> getAllComplaints() {
         CriteriaBuilder builder = SimpleServer.session.getCriteriaBuilder();
-        System.out.println("Arrived to getAllComplaints 2");
         CriteriaQuery<Complaint> query = builder.createQuery(Complaint.class);
-        System.out.println("Arrived to getAllComplaints 3");
         query.from(Complaint.class);
-        System.out.println("Arrived to getAllComplaints 4");
-        List<Complaint> result = SimpleServer.session.createQuery(query).getResultList();
-        System.out.println("Arrived to getAllComplaints 5");
-        return result;
+        return SimpleServer.session.createQuery(query).getResultList();
     }
 
-    static Long countRowsComplaint() {
-        System.out.println("Arrived to coutnrwos 1");
-        final CriteriaBuilder criteriaBuilder = SimpleServer.session.getCriteriaBuilder();
-        System.out.println("Arrived to coutnrwos 2");
-        CriteriaQuery<Long> criteria = criteriaBuilder.createQuery(Long.class);
-        System.out.println("Arrived to coutnrwos 3");
-        Root<Complaint> root = criteria.from(Complaint.class);
-        System.out.println("Arrived to coutnrwos 4");
-        criteria.select(criteriaBuilder.count(root));
-        System.out.println("Arrived to coutnrwos 5");
-        return SimpleServer.session.createQuery(criteria).getSingleResult();
+    static Long countComplaintRows() { // was countRowsComplaint
+        final CriteriaBuilder cb = SimpleServer.session.getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<Complaint> root = cq.from(Complaint.class);
+        cq.select(cb.count(root));
+        return SimpleServer.session.createQuery(cq).getSingleResult();
     }
 
-    public static void addComplaint(Complaint recievedComplaint) {
-        System.out.println("inside addCompliTocatalog1");
-        long numOfRowsComplaint = countRowsComplaint();
-        int castedId = (int)numOfRowsComplaint;
-        int newComplaintId = castedId + 1;
-        recievedComplaint.setComplaintID(newComplaintId);
-        SessionFactory sessionFactory = SimpleServer.getSessionFactory();
-        SimpleServer.session = sessionFactory.openSession();
-        Transaction tx = SimpleServer.session.beginTransaction();
-        System.out.println("inside additemTocatalog8");
+    // --- Mutations (public API used by SimpleServer) ---
+    public static void addComplaint(Complaint received) {
+        System.out.println("[Complaints] addComplaint()");
 
-        SimpleServer.session.save(recievedComplaint);
-        System.out.println("inside additemTocatalog9");
-        SimpleServer.session.flush();
-        System.out.println("inside additemTocatalog10");
-        tx.commit();
-        System.out.println("inside additemTocatalog11");
+        // assign id = currentRowCount + 1
+        long rows = countComplaintRows();
+        int newId = (int) rows + 1;
+        received.setComplaintID(newId);
 
-        System.out.println("inside additemTocatalog12");
-    }
-    public static void editComplaint(Complaint recievedComplaint){
-        System.out.println("Arrived to edit Complaint");
-        SessionFactory sessionFactory = SimpleServer.getSessionFactory();
-        SimpleServer.session = sessionFactory.openSession();
-        Transaction tx = SimpleServer.session.beginTransaction();
+        SessionFactory sf = SimpleServer.getSessionFactory();
+        try {
+            SimpleServer.session = sf.openSession();
+            Transaction tx = SimpleServer.session.beginTransaction();
 
-        int receivedComplaintID = recievedComplaint.getComplaintID();
+            SimpleServer.session.save(received);
+            SimpleServer.session.flush();
+            tx.commit();
 
-        int recievedComplaintID = recievedComplaint.getComplaintID();
-        int recievedCustomerID = recievedComplaint.getCustomerID();
-        int recievedAnswerWorkerID = recievedComplaint.getAnswerworkerID();
-        String recievedReplyText = recievedComplaint.getReplyText();
-        int recievedMoneyValue = recievedComplaint.getReturnedmoneyvalue();
-        boolean recievedIsReturnMoney = recievedComplaint.isReturnedMoney();
-        boolean recievedIsAccpeted = recievedComplaint.isAccepted();
-
-
-        System.out.println("Arrived to edit Complaint 2");
-        Complaint updateComplaint  = SimpleServer.session.load(Complaint.class, recievedComplaintID);
-
-        updateComplaint.setComplaintID(recievedComplaintID);
-        updateComplaint.setCustomerID(recievedCustomerID);
-        updateComplaint.setAnswerworkerID(recievedAnswerWorkerID);
-        updateComplaint.setReplyText(recievedReplyText);
-        updateComplaint.setReturnedmoneyvalue(recievedMoneyValue);
-        updateComplaint.setReturnedMoney(recievedIsReturnMoney);
-        updateComplaint.setAccepted(recievedIsAccpeted);
-
-
-        System.out.println("Arrived to edit Complaint 3");
-        SimpleServer.session.update(updateComplaint);
-        System.out.println("Arrived to edit Complaint 4");
-        tx.commit();
+        } finally {
+            if (SimpleServer.session != null && SimpleServer.session.isOpen()) {
+                SimpleServer.session.close();
+            }
+        }
     }
 
+    public static void editComplaint(Complaint received) {
+        System.out.println("[Complaints] editComplaint() id=" + received.getComplaintID());
+
+        SessionFactory sf = SimpleServer.getSessionFactory();
+        try {
+            SimpleServer.session = sf.openSession();
+            Transaction tx = SimpleServer.session.beginTransaction();
+
+            int id = received.getComplaintID(); // keep compatibility with existing entity API
+            Complaint toUpdate = SimpleServer.session.load(Complaint.class, id);
+
+            // copy editable fields (kept original field names on entity)
+            toUpdate.setCustomerID(received.getCustomerID());
+            toUpdate.setAnswerworkerID(received.getAnswerworkerID());
+            toUpdate.setReplyText(received.getReplyText());
+            toUpdate.setReturnedmoneyvalue(received.getReturnedmoneyvalue());
+            toUpdate.setReturnedMoney(received.isReturnedMoney());
+            toUpdate.setAccepted(received.isAccepted());
+
+            SimpleServer.session.update(toUpdate);
+            tx.commit();
+
+        } finally {
+            if (SimpleServer.session != null && SimpleServer.session.isOpen()) {
+                SimpleServer.session.close();
+            }
+        }
+    }
 }

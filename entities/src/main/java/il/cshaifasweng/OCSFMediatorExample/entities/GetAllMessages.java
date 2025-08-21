@@ -2,20 +2,57 @@ package il.cshaifasweng.OCSFMediatorExample.entities;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
-public class GetAllMessages implements Serializable { // added 16.8
+public class GetAllMessages implements Serializable {
 
-    List<Message> messageList;
+    private static final long serialVersionUID = 1L;
 
-    public GetAllMessages(){
+    private List<Message> messageList;
 
+    // ————————————————————
+    // Constructors
+    // ————————————————————
+
+    public GetAllMessages() { }
+
+    public GetAllMessages(List<Message> messages) {
+        this.messageList = messages;
     }
 
-    public void setMessageList(List<Message> msgList){
-        messageList = msgList;
-    }
+    // ————————————————————
+    // Getters & Setters
+    // ————————————————————
 
-    public List<Message> getMessageList(){
+    public List<Message> getMessageList() {
         return messageList;
+    }
+
+    public void setMessageList(List<Message> msgList) {
+        this.messageList = msgList;
+    }
+
+    // ————————————————————
+    // Utils
+    // ————————————————————
+
+    @Override
+    public String toString() {
+        return "GetAllMessages{" +
+                "messageList size=" + (messageList != null ? messageList.size() : 0) +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof GetAllMessages)) return false;
+        GetAllMessages that = (GetAllMessages) o;
+        return Objects.equals(messageList, that.messageList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(messageList);
     }
 }

@@ -4,95 +4,64 @@ import java.io.Serializable;
 
 public class UpdateMessage implements Serializable {
 
-    private String updateClass;
-    private String updateFunction ;
-    private String deleteId;
-    private int id;
-    private Product product = null;
-    private Account account = null;
-    private Worker worker = null;
-    private Manager manager = null;
-    private Order order = null;
-    private Complaint complaint = null;
+    private static final long serialVersionUID = 1L;
+
+    private String targetClass;
+    private String actionType;
+    private String deleteKey;
+    private int entityId;
+
+    private Product product;
+    private Account account;
+    private Worker worker;
+    private Manager manager;
+    private Order order;
+    private Complaint complaint;
     private Message message;
 
-
-    public UpdateMessage(String update_class, String update_function){
-        this.updateClass = update_class;
-        this.updateFunction = update_function;
-
-    }
-    public Complaint getComplaint()
-    {   return complaint; }
-
-    public void setComplaint(Complaint complaint)
-    { this.complaint = complaint; }
-
-
-    public String getUpdateClass(){
-        return this.updateClass;
-    }
-    public String getUpdateFunction(){
-        return this.updateFunction;
+    public UpdateMessage(String targetClass, String actionType) {
+        this.targetClass = targetClass;
+        this.actionType = actionType;
     }
 
-    public String getDelteId(){
-        return this.deleteId;
-    }
+    // === Complaint ===
+    public Complaint getComplaint() { return complaint; }
+    public void setComplaint(Complaint complaint) { this.complaint = complaint; }
 
-    public int getId(){
-        return this.id;
-    }
+    // === Metadata ===
+    public String getTargetClass() { return targetClass; }
+    public String getActionType() { return actionType; }
 
-    public Product getProduct(){
-        return this.product;
-    }
+    public String getDeleteKey() { return deleteKey; }
+    public void setDeleteKey(String deleteKey) { this.deleteKey = deleteKey; }
 
-    public Account getAccount(){
-        return this.account;
-    }
+    public int getEntityId() { return entityId; }
+    public void setEntityId(int entityId) { this.entityId = entityId; }
 
-    public void setProduct(Product prod){
-        this.product = prod;
-    }
+    // === Entities ===
+    public Product getProduct() { return product; }
+    public void setProduct(Product product) { this.product = product; }
 
-    public void setAccount(Account acc){
-        this.account = acc;
-    }
-    public void setId(int id){
-        this.id = id;
-    }
-    public void setDelteId(String delete_id){
-        this.deleteId = delete_id;
-    }
+    public Account getAccount() { return account; }
+    public void setAccount(Account account) { this.account = account; }
 
-    public void setWorker(Worker worker) {
-        this.worker = worker;
-    }
+    public Worker getWorker() { return worker; }
+    public void setWorker(Worker worker) { this.worker = worker; }
 
-    public Worker getWorker() {
-        return worker;
-    }
+    public Manager getManager() { return manager; }
+    public void setManager(Manager manager) { this.manager = manager; }
 
-    public Manager getManager() {
-        return manager;
-    }
+    public Order getOrder() { return order; }
+    public void setOrder(Order order) { this.order = order; }
 
-    public void setManager(Manager manager) {
-        this.manager = manager;
-    }
+    public Message getMessage() { return message; }
+    public void setMessage(Message message) { this.message = message; }
 
-    public Order getOrder() {
-        return order;
+    @Override
+    public String toString() {
+        return "UpdateMessage{targetClass='" + targetClass +
+                "', actionType='" + actionType +
+                "', deleteKey='" + deleteKey +
+                "', entityId=" + entityId + "}";
     }
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
-    public Message getMessage()
-    {   return message; }
-
-    public void setMessage(Message message)
-    { this.message=message; }
 }
-
