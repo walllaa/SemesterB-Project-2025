@@ -12,6 +12,7 @@ public class SimpleClient extends AbstractClient {
 
 	private static final long DEFAULT_POST_DELAY_MS = 4000L;
 
+	private Item baseCatalog;
 	private SimpleClient(String host, int port) {
 		super(host, port);
 	}
@@ -20,7 +21,14 @@ public class SimpleClient extends AbstractClient {
 	protected void handleMessageFromServer(Object msg) {
 		System.out.println("handle start");
 
-		// 1) Lists (catalog etc.)
+		// 1) Catalog items
+		if (msg instanceof CatalogItems) {
+			CatalogItems catalog = (CatalogItems) msg;
+			EventBus.getDefault().post(new CatalogItemsEvent(catalog.getItems()));
+			return;
+		}
+
+		// 2) Legacy lists (Product etc.)
 		if (msg instanceof List) {
 			@SuppressWarnings("unchecked")
 			List<Product> products = (List<Product>) msg;
@@ -29,9 +37,9 @@ public class SimpleClient extends AbstractClient {
 			}
 			EventBus.getDefault().post(new UpdateGuiEvent(products));
 			return;
-		}
 
-		// 2) Simple textual status strings
+
+			// 2) Simple textual status strings
 		if (msg instanceof String) {
 			handleStatusString((String) msg);
 			return;

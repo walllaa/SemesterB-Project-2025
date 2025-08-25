@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.Label?>
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.ItemDetailController" spacing="10" alignment="CENTER" prefWidth="300" prefHeight="400">
+    <ImageView fx:id="detailImage" fitWidth="200" fitHeight="200" />
+    <Label fx:id="nameLabel" />
+    <Label fx:id="priceLabel" />
+    <Label fx:id="descriptionLabel" wrapText="true" />
+</VBox>

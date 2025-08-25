@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.Label?>
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.ItemCardController" spacing="10" alignment="CENTER" prefWidth="200" prefHeight="270" onMouseClicked="#handleClick">
+    <ImageView fx:id="itemImage" fitWidth="160" fitHeight="160" />
+    <Label fx:id="nameLabel" />
+    <Label fx:id="priceLabel" />
+</VBox>

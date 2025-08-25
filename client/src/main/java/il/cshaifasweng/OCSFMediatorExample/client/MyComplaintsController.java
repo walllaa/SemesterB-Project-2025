@@ -95,8 +95,8 @@ public class MyComplaintsController {
         String aString = "";
         if (loadButton.getText().equals("Load Complaints")) {
             for (int z = 0; z < allComplaints.size(); z++) {
-                if (currentUser.getAccountId() == allComplaints.get(z).getCustomerId()) {
-                    aString = "#" + allComplaints.get(z).getComplaintID() + " - " + allComplaints.get(z).getDay() + "/" + allComplaints.get(z).getMonth() + "/" + allComplaints.get(z).getYear();
+                if (currentUser.getAccountID() == allComplaints.get(z).getCustomerId()) {
+                    aString = "#" + allComplaints.get(z).getComplaintId() + " - " + allComplaints.get(z).getDay() + "/" + allComplaints.get(z).getMonth() + "/" + allComplaints.get(z).getYear();
                     complaintList.getItems().add(aString);
                     aString = "";
                 }

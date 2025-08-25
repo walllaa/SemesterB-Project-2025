@@ -7,10 +7,8 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.WorkerUpdateManager;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ManagerUpdateManager;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.OrderUpdateManager;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ComplaintUpdateManager;
-
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.hibernate.*;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -140,6 +138,11 @@ public class SimpleServer extends AbstractServer {
 				GetAllAccounts payload = new GetAllAccounts();
 				payload.setAll_accounts(getAllAccounts());
 				client.sendToClient(payload);
+			}
+
+			if (received.equals("getCatalog")) {
+				List<Item> items = CatalogDAO.getAllItems();
+				client.sendToClient(new CatalogItems(items));
 			}
 
 			tx1.commit();

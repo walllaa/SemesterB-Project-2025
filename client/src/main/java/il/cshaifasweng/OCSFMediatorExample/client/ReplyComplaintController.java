@@ -86,8 +86,8 @@ public class ReplyComplaintController {
         String TempPercent = "";
         boolean willReturnMoney=  false;
         int returnedMoney = 0;
-        selectedComplaint.setAccepted(true);
-        selectedComplaint.setAnswerworkerID(currentUser.getAccountID());
+        selectedComplaint.setResolved(true);
+        selectedComplaint.setAnswerWorkerId(currentUser.getAccountID());
         selectedComplaint.setReplyText(replyText.getText());
         if(refundCheck.isSelected())
         {
@@ -95,8 +95,8 @@ public class ReplyComplaintController {
             TempPercent = Character.toString(refundPercent.getSelectionModel().getSelectedItem().charAt(0)) + Character.toString(refundPercent.getSelectionModel().getSelectedItem().charAt(1));
             PercentInt = Integer.parseInt(TempPercent);
         }
-        selectedComplaint.setReturnedMoney(willReturnMoney);
-        selectedComplaint.setReturnedmoneyvalue(PercentInt);
+        selectedComplaint.setRefunded(willReturnMoney);
+        selectedComplaint.setRefundAmount(PercentInt);
 
         System.out.println("ReplyComplaintController before updating complaint");
         UpdateMessage update_complaint = new UpdateMessage("complaint","edit");
@@ -108,18 +108,7 @@ public class ReplyComplaintController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("ReplyComplaintController before updating complaint");
-        UpdateMessage update_complainte = new UpdateMessage("complaint","edit");
-        update_complainte.setComplaint(selectedComplaint);
-
-        try {
-            SimpleClient.getClient().sendToServer(update_complaint);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         System.out.println("ReplyComplaintController after updating complaint");
-
         Calendar calle = Calendar.getInstance();
         int currentYear = calle.get(Calendar.YEAR);
         int currentMonth = calle.get(Calendar.MONTH);
@@ -129,7 +118,7 @@ public class ReplyComplaintController {
         int currentDay = calle.get(Calendar.DAY_OF_MONTH);
 
         Message confirm = new Message();
-        confirm.setCustomerID(selectedComplaint.getCustomerID());
+        confirm.setCustomerID(selectedComplaint.getCustomerId());
         confirm.setMsgText(currentYear + "/" + currentMonth + "/" + currentDay + " - " + currentHour + ":" + currentMintue + ":" + "\n" +  "Your Complaint Has Been Answered!");
 
         UpdateMessage updateMessage1 = new UpdateMessage("message", "add");
@@ -171,9 +160,8 @@ public class ReplyComplaintController {
         {
             for(int z = 0 ; z < retrievedComplaints.size() ; z++)
             {
-                if(retrievedComplaints.get(z).isAccepted() == false)
-                {
-                    aString = "#" + retrievedComplaints.get(z).getComplaintID() + " - " + retrievedComplaints.get(z).getDay() + "/" + retrievedComplaints.get(z).getMonth() + "/" + retrievedComplaints.get(z).getYear();
+                if(retrievedComplaints.get(z).isResolved() == false)                {
+                    aString = "#" + retrievedComplaints.get(z).getComplaintId() + " - " + retrievedComplaints.get(z).getDay() + "/" + retrievedComplaints.get(z).getMonth() + "/" + retrievedComplaints.get(z).getYear();
                     complaintList.getItems().add(aString);
                     aString = "";
                 }
@@ -191,7 +179,7 @@ public class ReplyComplaintController {
             }
             SelectedID = Integer.parseInt(SelectedIDString);
             for (int i = 0; i < retrievedComplaints.size(); i++) {
-                if (retrievedComplaints.get(i).getComplaintID() == SelectedID) {
+                if (retrievedComplaints.get(i).getComplaintId() == SelectedID) {
                     selectedComplaint = retrievedComplaints.get(i);
                     break;
                 }
@@ -199,9 +187,9 @@ public class ReplyComplaintController {
             complaintList.getItems().clear();
             loadButton.setText("Load Complaints");
 
-            complaintID.setText(String.valueOf(selectedComplaint.getComplaintID()));
-            accountID.setText(String.valueOf(selectedComplaint.getCustomerID()));
-            orderID.setText(String.valueOf(selectedComplaint.getOrderID()));
+            complaintID.setText(String.valueOf(selectedComplaint.getComplaintId()));
+            accountID.setText(String.valueOf(selectedComplaint.getCustomerId()));
+            orderID.setText(String.valueOf(selectedComplaint.getOrderId()));
             complaintDate.setText(selectedComplaint.getDate());
             complaintText.setText(selectedComplaint.getComplaintText());
         }
@@ -265,7 +253,7 @@ public class ReplyComplaintController {
         other.setVisible(false);
         wait.setVisible(true);
         sendButton.setVisible(false);
-        //String aString = "Complaint #" + a.getComplaintID() + " " + "Received: " + a.getDay() + "/" + a.getMonth() + "/" + a.getYear();
+        //String aString = "Complaint #" + a.getComplaintId() + " " + "Received: " + a.getDay() + "/" + a.getMonth() + "/" + a.getYear();
         //complaintList.getItems().add(aString);
         //retrievedComplaints.add(a);
 
