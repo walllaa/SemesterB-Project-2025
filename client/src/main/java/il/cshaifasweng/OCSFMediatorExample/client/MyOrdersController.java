@@ -312,16 +312,16 @@ public class MyOrdersController {
         int currentDay = calle.get(Calendar.DAY_OF_MONTH);
 
         Complaint newComplaint = new Complaint();
-        newComplaint.setComplaintID(0); // 0 - Will be changed later
-        newComplaint.setCustomerID(currentUser.getAccountID());
-        newComplaint.setOrderID(SelectedOrder.getOrderID());
-        newComplaint.setAccepted(false);
-        newComplaint.setIn24Hours(false);
+        newComplaint.setComplaintId(0); // 0 - Will be changed later
+        newComplaint.setCustomerId(currentUser.getAccountID());
+        newComplaint.setOrderId(SelectedOrder.getOrderID());
+        newComplaint.setResolved(false);
+        newComplaint.setWithin24Hours(false);
         newComplaint.setComplaintText(complaintText.getText());
-        newComplaint.setShopID(SelectedOrder.getShopID());
-        newComplaint.setAnswerworkerID(0);
-        newComplaint.setReturnedMoney(false);
-        newComplaint.setReturnedmoneyvalue(0);
+        newComplaint.setShopId(SelectedOrder.getShopID());
+        newComplaint.setAnswerWorkerId(0);
+        newComplaint.setRefunded(false);
+        newComplaint.setRefundAmount(0);
         newComplaint.setDay(currentDay);
         newComplaint.setMonth(currentMonth);
         newComplaint.setYear(currentYear);

@@ -14,34 +14,34 @@ public class Complaint implements Serializable {
 
     @Id
     @Column(name = "complaintID")
-    private int complaintID;
+    private int complaintId;
 
     @Column(name = "Customer_Id")
-    private int CustomerID;
+    private int customerId;
 
     @Column(name = "Order_Id")
-    private int OrderID;
+    private int orderId;
 
     @Column(name = "Accepted")
-    private boolean Accepted; // Update
+    private boolean resolved;
 
     @Column(name = "in24Hours")
-    private boolean in24Hours;   // Update
+    private boolean within24Hours;
 
     @Column(name = "complaintText", length = 1000)
     private String complaintText;
 
     @Column(name = "shop_Id")
-    private int shopID;
+    private int shopId;
 
     @Column(name = "AnswerWorker_Id")
-    private int answerworkerID;
+    private int answerWorkerId;
 
     @Column(name = "returnedMoney")
-    private boolean returnedMoney;
+    private boolean refunded;
 
     @Column(name = "returnedmoneyvalue")
-    private int returnedmoneyvalue;
+    private int refundAmount;
 
     @Column(name = "RecDay")
     private int day;
@@ -53,7 +53,7 @@ public class Complaint implements Serializable {
     private int year;
 
     @Column(name = "Reply", length = 1000)
-    private String ReplyText;   // This is the reply text - Update
+    private String replyText;
 
     // ————————————————————
     // Constructors
@@ -61,48 +61,47 @@ public class Complaint implements Serializable {
 
     public Complaint() { }
 
-    public Complaint(int complaintID, int customerID, int orderID, boolean accepted, boolean in24Hours,
-                     String complaintText, int shopID, int answerworkerID, boolean returnedMoney,
-                     int returnedmoneyvalue, int day, int month, int year, String replyText) {
-        this.complaintID = complaintID;
-        this.CustomerID = customerID;
-        this.OrderID = orderID;
-        this.Accepted = accepted;
-        this.in24Hours = in24Hours;
+    public Complaint(int complaintId, int customerId, int orderId, boolean resolved, boolean within24Hours,
+                     String complaintText, int shopId, int answerWorkerId, boolean refunded,
+                     int refundAmount, int day, int month, int year, String replyText) {
+        this.complaintId = complaintId;
+        this.customerId = customerId;
+        this.orderId = orderId;
+        this.resolved = resolved;
+        this.within24Hours = within24Hours;
         this.complaintText = complaintText;
-        this.shopID = shopID;
-        this.answerworkerID = answerworkerID;
-        this.returnedMoney = returnedMoney;
-        this.returnedmoneyvalue = returnedmoneyvalue;
+        this.shopId = shopId;
+        this.answerWorkerId = answerWorkerId;
+        this.refunded = refunded;
+        this.refundAmount = refundAmount;
         this.day = day;
         this.month = month;
         this.year = year;
-        this.ReplyText = replyText;
+        this.replyText = replyText;
     }
-
     // ————————————————————
     // Setters
     // ————————————————————
 
-    public void setComplaintID(int complaintID) { this.complaintID = complaintID; }
+    public void setComplaintId(int complaintId) { this.complaintId = complaintId; }
 
-    public void setCustomerID(int customerID) { CustomerID = customerID; }
+    public void setCustomerId(int customerId) { this.customerId = customerId; }
 
-    public void setOrderID(int orderID) { OrderID = orderID; }
+    public void setOrderId(int orderId) { this.orderId = orderId; }
 
-    public void setAccepted(boolean accepted) { Accepted = accepted; }
+    public void setResolved(boolean resolved) { this.resolved = resolved; }
 
-    public void setIn24Hours(boolean in24Hours) { this.in24Hours = in24Hours; }
+    public void setWithin24Hours(boolean within24Hours) { this.within24Hours = within24Hours; }
 
     public void setComplaintText(String complaintText) { this.complaintText = complaintText != null ? complaintText.trim() : null; }
 
-    public void setShopID(int shopID) { this.shopID = shopID; }
+    public void setShopId(int shopId) { this.shopId = shopId; }
 
-    public void setAnswerworkerID(int answerworkerID) { this.answerworkerID = answerworkerID; }
+    public void setAnswerWorkerId(int answerWorkerId) { this.answerWorkerId = answerWorkerId; }
 
-    public void setReturnedMoney(boolean returnedMoney) { this.returnedMoney = returnedMoney; }
+    public void setRefunded(boolean refunded) { this.refunded = refunded; }
 
-    public void setReturnedmoneyvalue(int returnedmoneyvalue) { this.returnedmoneyvalue = returnedmoneyvalue; }
+    public void setRefundAmount(int refundAmount) { this.refundAmount = refundAmount; }
 
     public void setDay(int day) { this.day = day; }
 
@@ -110,31 +109,30 @@ public class Complaint implements Serializable {
 
     public void setYear(int year) { this.year = year; }
 
-    public void setReplyText(String replyText) { ReplyText = replyText != null ? replyText.trim() : null; }
-
+    public void setReplyText(String replyText) { this.replyText = replyText != null ? replyText.trim() : null; }
     // ————————————————————
     // Getters
     // ————————————————————
 
-    public int getComplaintID() { return complaintID; }
+    public int getComplaintId() { return complaintId; }
 
-    public int getCustomerID() { return CustomerID; }
+    public int getCustomerId() { return customerId; }
 
-    public int getOrderID() { return OrderID; }
+    public int getOrderId() { return orderId; }
 
-    public boolean isAccepted() { return Accepted; }
+    public boolean isResolved() { return resolved; }
 
-    public boolean isIn24Hours() { return in24Hours; }
+    public boolean isWithin24Hours() { return within24Hours; }
 
     public String getComplaintText() { return complaintText; }
 
-    public int getShopID() { return shopID; }
+    public int getShopId() { return shopId; }
 
-    public int getAnswerworkerID() { return answerworkerID; }
+    public int getAnswerWorkerId() { return answerWorkerId; }
 
-    public boolean isReturnedMoney() { return returnedMoney; }
+    public boolean isRefunded() { return refunded; }
 
-    public int getReturnedmoneyvalue() { return returnedmoneyvalue; }
+    public int getRefundAmount() { return refundAmount; }
 
     public int getDay() { return day; }
 
@@ -142,16 +140,14 @@ public class Complaint implements Serializable {
 
     public int getYear() { return year; }
 
-    public String getReplyText() { return ReplyText; }
-
+    public String getReplyText() { return replyText; }
     public String getDate() {
         return this.day + "/" + this.month + "/" + this.year;
     }
 
     public boolean sameDate(Complaint other) {
         if (other == null) return false;
-        return this.day == other.day && this.month == other.month && this.year == other.year;
-    }
+        return this.day == other.day && this.month == other.month && this.year == other.year;    }
 
     // ————————————————————
     // Utils
@@ -159,21 +155,20 @@ public class Complaint implements Serializable {
 
     @Override
     public String toString() {
-        return "Complaint{" +
-                "complaintID=" + complaintID +
-                ", CustomerID=" + CustomerID +
-                ", OrderID=" + OrderID +
-                ", Accepted=" + Accepted +
-                ", in24Hours=" + in24Hours +
+        return "complaintId=" + complaintId +
+                ", customerId=" + customerId +
+                ", orderId=" + orderId +
+                ", resolved=" + resolved +
+                ", within24Hours=" + within24Hours +
                 ", complaintText='" + complaintText + '\'' +
-                ", shopID=" + shopID +
-                ", answerworkerID=" + answerworkerID +
-                ", returnedMoney=" + returnedMoney +
-                ", returnedmoneyvalue=" + returnedmoneyvalue +
+                ", shopId=" + shopId +
+                ", answerWorkerId=" + answerWorkerId +
+                ", refunded=" + refunded +
+                ", refundAmount=" + refundAmount +
                 ", day=" + day +
                 ", month=" + month +
                 ", year=" + year +
-                ", ReplyText='" + ReplyText + '\'' +
+                ", replyText='" + replyText + '\'' +
                 '}';
     }
 
@@ -182,11 +177,12 @@ public class Complaint implements Serializable {
         if (this == o) return true;
         if (!(o instanceof Complaint)) return false;
         Complaint that = (Complaint) o;
-        return complaintID == that.complaintID;
+        return complaintId == that.complaintId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(complaintID);
+
+        return Objects.hash(complaintId);
     }
 }

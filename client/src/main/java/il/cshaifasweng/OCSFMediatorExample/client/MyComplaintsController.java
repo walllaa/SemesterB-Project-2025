@@ -95,7 +95,7 @@ public class MyComplaintsController {
         String aString = "";
         if (loadButton.getText().equals("Load Complaints")) {
             for (int z = 0; z < allComplaints.size(); z++) {
-                if(currentUser.getAccountID() == allComplaints.get(z).getCustomerID()) {
+                if (currentUser.getAccountId() == allComplaints.get(z).getCustomerId()) {
                     aString = "#" + allComplaints.get(z).getComplaintID() + " - " + allComplaints.get(z).getDay() + "/" + allComplaints.get(z).getMonth() + "/" + allComplaints.get(z).getYear();
                     complaintList.getItems().add(aString);
                     aString = "";
@@ -112,23 +112,25 @@ public class MyComplaintsController {
             }
             SelectedID = Integer.parseInt(SelectedIDString);
             for (int i = 0; i < complaintList.getItems().size(); i++) {
-                if (allComplaints.get(i).getComplaintID() == SelectedID) {
+                if (allComplaints.get(i).getComplaintId() == SelectedID) {
                     selectedComplaint = allComplaints.get(i);
                 }
             }
-            complaintID.setText(Integer.toString(selectedComplaint.getComplaintID()));
-            orderID.setText(Integer.toString(selectedComplaint.getOrderID()));
-            if(selectedComplaint.isAccepted() == true) {
+            complaintID.setText(Integer.toString(selectedComplaint.getComplaintId()));
+            orderID.setText(Integer.toString(selectedComplaint.getOrderId()));
+            if (selectedComplaint.isResolved() == true) {
                 answerBool.setText("Yes");
-                refundMoney.setText(Integer.toString(selectedComplaint.getReturnedmoneyvalue()));
+                refundMoney.setText(Integer.toString(selectedComplaint.getRefundAmount()));
             }
-            else {
+            else{
                 answerBool.setText("No");
                 refundMoney.setText("0");
             }
-            replyWorker.setText(Integer.toString(selectedComplaint.getAnswerworkerID()));
+            replyWorker.setText(Integer.toString(selectedComplaint.getAnswerWorkerId()));
             complaintText.setText(selectedComplaint.getComplaintText());
+
         }
+
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete

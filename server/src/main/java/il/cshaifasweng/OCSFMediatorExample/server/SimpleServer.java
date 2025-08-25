@@ -55,12 +55,24 @@ public class SimpleServer extends AbstractServer {
 		configuration.addAnnotatedClass(Complaint.class);
 		configuration.addAnnotatedClass(Message.class);
 
+//		ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
+//				.applySettings(configuration.getProperties())
+//				.build();
+//		return configuration.buildSessionFactory(serviceRegistry);}
+
 		ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
 				.applySettings(configuration.getProperties())
 				.build();
-		return configuration.buildSessionFactory(serviceRegistry);
-	}
 
+		try {
+			SessionFactory sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+			System.out.println("DB connection established successfully");
+			return sessionFactory;
+		} catch (HibernateException e) {
+			System.err.println("Failed to establish DB connection: " + e.getMessage());
+			throw e;
+		}
+	}
 	public static void generateProducts() {
 		System.out.println("arrived to generate products function");
 		// NOTE: Product API was renamed earlier (id→productCode, etc.). Use the new ctor if available.
@@ -83,7 +95,7 @@ public class SimpleServer extends AbstractServer {
 			String received = (String) msg;
 
 			if (received.equals("first entry")) { // app opened — hydrate initial data if exists
-				List<String> tables = session.createSQLQuery("SHOW TABLES from flowers;").list();
+				List<String> tables = session.createSQLQuery("SHOW TABLES;").list();
 				int idx = -1;
 				for (int i = 0; i < tables.size(); i++) {
 					if ("products_table".equals(tables.get(i))) idx = i;

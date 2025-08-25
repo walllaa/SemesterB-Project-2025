@@ -41,7 +41,7 @@ public class ComplaintUpdateManager {
         // assign id = currentRowCount + 1
         long rows = countComplaintRows();
         int newId = (int) rows + 1;
-        received.setComplaintID(newId);
+        received.setComplaintId(newId);
 
         SessionFactory sf = SimpleServer.getSessionFactory();
         try {
@@ -60,23 +60,23 @@ public class ComplaintUpdateManager {
     }
 
     public static void editComplaint(Complaint received) {
-        System.out.println("[Complaints] editComplaint() id=" + received.getComplaintID());
+        System.out.println("[Complaints] editComplaint() id=" + received.getComplaintId());
 
         SessionFactory sf = SimpleServer.getSessionFactory();
         try {
             SimpleServer.session = sf.openSession();
             Transaction tx = SimpleServer.session.beginTransaction();
 
-            int id = received.getComplaintID(); // keep compatibility with existing entity API
+            int id = received.getComplaintId();
             Complaint toUpdate = SimpleServer.session.load(Complaint.class, id);
 
-            // copy editable fields (kept original field names on entity)
-            toUpdate.setCustomerID(received.getCustomerID());
-            toUpdate.setAnswerworkerID(received.getAnswerworkerID());
+            // copy editable fields
+            toUpdate.setCustomerId(received.getCustomerId());
+            toUpdate.setAnswerWorkerId(received.getAnswerWorkerId());
             toUpdate.setReplyText(received.getReplyText());
-            toUpdate.setReturnedmoneyvalue(received.getReturnedmoneyvalue());
-            toUpdate.setReturnedMoney(received.isReturnedMoney());
-            toUpdate.setAccepted(received.isAccepted());
+            toUpdate.setRefundAmount(received.getRefundAmount());
+            toUpdate.setRefunded(received.isRefunded());
+            toUpdate.setResolved(received.isResolved());
 
             SimpleServer.session.update(toUpdate);
             tx.commit();
